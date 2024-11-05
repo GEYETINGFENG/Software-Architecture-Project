@@ -3,7 +3,6 @@ import http from 'http';
 
 const PORT = 3001; // Socket.IO 服务器的端口
 
-// 创建 HTTP 服务器，并将其传递给 Socket.IO
 const server = http.createServer();
 const io = new SocketIO(server, {
   cors: {
@@ -18,16 +17,13 @@ io.on('connection', (socket) => {
   console.log('New client connected');
 
   // 创建房间
-socket.on('createRoom', (roomId) => {
+  socket.on('createRoom', (roomId) => {
     if (!rooms[roomId]) {
-      rooms[roomId] = { players: [], questions: [], answers: {} };
+      rooms[roomId] = { players: [], questions: [], answers: {}, readyCount: 0, timer: null };
       socket.join(roomId);
       console.log(`Room ${roomId} created`);
-      
-      // 通知创建房间的客户端房间已创建成功
       socket.emit('roomCreated', roomId);
     } else {
-      // 如果房间已存在，返回错误信息
       socket.emit('error', 'Room already exists');
     }
   });
@@ -44,12 +40,24 @@ socket.on('createRoom', (roomId) => {
     }
   });
 
-  // 开始游戏
+  // 玩家准备开始游戏
   socket.on('startGame', async (roomId) => {
-    // 假设题目数据从数据库中获取
-    const quizzes = await getQuizzesFromDatabase();
-    rooms[roomId].questions = quizzes;
-    io.to(roomId).emit('gameStarted', quizzes);
+    if (rooms[roomId]) {
+      rooms[roomId].readyCount += 1;
+      socket.emit('waitingForOpponent');
+
+      if (rooms[roomId].readyCount === 2) {
+        const quizzes = await getQuizzesFromDatabase();
+        rooms[roomId].questions = quizzes;
+        io.to(roomId).emit('gameStarted', quizzes);
+
+        // 启动倒计时
+        startTimer(roomId);
+        rooms[roomId].readyCount = 0; // 重置准备计数
+      }
+    } else {
+      socket.emit('error', 'Room does not exist');
+    }
   });
 
   // 提交答案
@@ -62,6 +70,20 @@ socket.on('createRoom', (roomId) => {
     console.log('Client disconnected');
   });
 });
+
+// 启动计时器函数
+function startTimer(roomId) {
+  let countdown = 30; // 30秒倒计时
+  rooms[roomId].timer = setInterval(() => {
+    if (countdown > 0) {
+      countdown--;
+      io.to(roomId).emit('timer', countdown); // 每秒发送剩余时间
+    } else {
+      clearInterval(rooms[roomId].timer);
+      io.to(roomId).emit('timeUp'); // 时间到事件
+    }
+  }, 1000);
+}
 
 // 启动 Socket.IO 服务器
 server.listen(PORT, () => {
