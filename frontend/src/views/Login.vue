@@ -2,18 +2,19 @@
   <div class="container" :class="{ 'sign-up-mode': isSignUpMode }">
     <div class="forms-container">
       <div class="signin-signup">
+        
         <!-- Sign In Form -->
         <form @submit.prevent="handleSignIn" class="sign-in-form">
           <h2 class="title">Sign in</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
-            <input type="text" v-model="signInUsername" placeholder="Username" />
+            <input type="text" v-model="signInUsername" placeholder="Username" required />
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
-            <input type="password" v-model="signInPassword" placeholder="Password" />
+            <input type="password" v-model="signInPassword" placeholder="Password" required />
           </div>
-          <input type="submit" value="Login" class="btn solid" />
+          <input type="submit" value="Login" class="btn solid"  />
         </form>
         
         <!-- Sign Up Form -->
@@ -21,15 +22,17 @@
           <h2 class="title">Sign up</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
-            <input type="text" v-model="signUpUsername" placeholder="Username" />
+            <input type="text" v-model="signUpUsername" placeholder="Username" 
+            required minlength="3" maxlength="20" />
           </div>
           <div class="input-field">
             <i class="fas fa-envelope"></i>
-            <input type="email" v-model="signUpEmail" placeholder="Email" />
+            <input type="email" v-model="signUpEmail" placeholder="Email" required  />
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
-            <input type="password" v-model="signUpPassword" placeholder="Password" />
+            <input type="password" v-model="signUpPassword" placeholder="Password" 
+            required minlength="8" />
           </div>
           <input type="submit" class="btn" value="Sign up" />
         </form>
@@ -66,6 +69,7 @@
 </template>
 
 <script>
+import axios from 'axios'; 
 export default {
   data() {
     return {
@@ -81,13 +85,34 @@ export default {
     toggleSignUpMode() {
       this.isSignUpMode = !this.isSignUpMode;
     },
-    handleSignIn() {
-      // Handle sign-in logic here
-      console.log('Sign in with', this.signInUsername, this.signInPassword);
+    // 处理登录
+    async handleSignIn() {
+      try {
+        const response = await axios.post('http://localhost:3000/api/users/login', {
+          username: this.signInUsername,
+          password: this.signInPassword,
+        });
+        console.log('Login successful:', response.data);
+        alert('Login successful');
+      } catch (error) {
+        console.error('Error during sign in:', error);
+        alert('Failed to login');
+      }
     },
-    handleSignUp() {
-      // Handle sign-up logic here
-      console.log('Sign up with', this.signUpUsername, this.signUpEmail, this.signUpPassword);
+    // 处理注册
+    async handleSignUp() {
+      try {
+        const response = await axios.post('http://localhost:3000/api/users/register', {
+          username: this.signUpUsername,
+          email: this.signUpEmail,
+          password: this.signUpPassword,
+        });
+        console.log('Registration successful:', response.data);
+        alert('Registration successful');
+      } catch (error) {
+        console.error('Error during sign up:', error);
+        alert('Failed to register');
+      }
     },
   },
 };

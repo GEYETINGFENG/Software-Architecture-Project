@@ -24,7 +24,7 @@ app.use(bodyParser());
 app.use(cors());
 // 用户注册
 router.post('/api/users/register', async (ctx) => {
-  const { username, password } = ctx.request.body;
+  const { username, email, password } = ctx.request.body;
 
   try {
     // 查询是否已有该用户
@@ -36,7 +36,7 @@ router.post('/api/users/register', async (ctx) => {
     }
 
     // 创建新用户
-    const user = new User({ username, password });
+    const user = new User({ username, email, password });
     await user.save();
     ctx.status = 201; // Created
     ctx.body = { message: 'User registered successfully' };
