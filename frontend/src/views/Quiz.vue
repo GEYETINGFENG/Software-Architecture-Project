@@ -1,5 +1,8 @@
 <template>
   <!-- 顶层容器 -->
+    <Topbar/>
+
+
   <div class="container">
     <h1>双人答题对战</h1>
     
@@ -57,8 +60,12 @@
 
 <script>
 import { io } from 'socket.io-client';
+import Topbar from '../components/Topbar.vue';  
 
 export default {
+  components: {
+    Topbar  // 注册Topbar组件
+  },
   data() {
     return {
       roomIdInput: '', // 用户输入的房间ID
@@ -162,7 +169,7 @@ export default {
 </script>
 
 <style scoped>
-/* 容器样式 */
+
 .container {
   max-width: 800px;
   margin: 0 auto;
@@ -209,7 +216,7 @@ input {
 }
 
 .primary-button:hover, .submit-button:hover {
-  background-color: #218838;
+  background-color: #bd3559;
 }
 
 /* 其他区域样式 */
