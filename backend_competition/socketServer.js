@@ -15,12 +15,15 @@ let rooms = {};
 
 io.on('connection', (socket) => {
   console.log('New client connected');
-
+//监听每个新客户端的连接事件，当有客户端成功连接到服务器时执行此回调
+//每个连接的客户端都会分配一个唯一的socket对象，用于和该客户端进行通信
   // 创建房间
   socket.on('createRoom', (roomId) => {
-    if (!rooms[roomId]) {
+    //监听客户端发送的createRoom事件，当客户端请求创建一个房间时执行该回调
+    if (!rooms[roomId]) {// 如果房间不存在
       rooms[roomId] = { players: [], questions: [], answers: {}, readyCount: 0, timer: null };
-      socket.join(roomId);
+      //初始化房间信息:房间内玩家ID列表，问题数据，玩家答案，玩家数量，倒计时
+      socket.join(roomId); 
       console.log(`Room ${roomId} created`);
       socket.emit('roomCreated', roomId);
     } else {
@@ -31,8 +34,8 @@ io.on('connection', (socket) => {
   // 加入房间
   socket.on('joinRoom', (roomId) => {
     if (rooms[roomId]) {
-      rooms[roomId].players.push(socket.id);
-      socket.join(roomId);
+      rooms[roomId].players.push(socket.id);//player是存储房间内玩家ID的数组
+      socket.join(roomId); //将客户端加入房间
       console.log(`Player ${socket.id} joined room ${roomId}`);
       io.to(roomId).emit('playerJoined', socket.id);
     } else {
