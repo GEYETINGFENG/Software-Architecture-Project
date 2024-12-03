@@ -13,6 +13,10 @@ const routes = [
       path: "/result",
       component: () => import("../views/Result.vue")
     },
+    {
+      path: "/blog",
+      component: () => import("../views/blog.vue")
+    },
   ]
 
 const router = createRouter({
