@@ -1,6 +1,11 @@
 import './assets/main.css'
 
 import { createApp } from 'vue'
-import App from './App.vue'
+import MainPage from './components/MainPage.vue';
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 
-createApp(App).mount('#app')
+Vue.use(ElementUI)
+
+createApp(MainPage).mount('#app');
+app.mount('#app')
