@@ -49,7 +49,7 @@ app.use(bodyParser());
 app.use(cors());
 
 // 查询接口
-router.get('/University', async (ctx) => {
+router.get('/qsRanking', async (ctx) => {
   const { year, name, location, sort_by, order_by } = ctx.query;
 
   // 根据年份选择表名
@@ -67,15 +67,20 @@ router.get('/University', async (ctx) => {
   let sql = `SELECT * FROM \`${tableName}\` `;
 
   // 根据参数条件构建查询语句
+  let conditions = [];
   if (validName) {
-    sql += ` WHERE \`Institution_Name\` LIKE CONCAT('%', ?, '%')`;
+    conditions.push(`\`Institution_Name\` LIKE CONCAT('%', ?, '%')`);
   }
   if (validLocation) {
-    sql += ` WHERE \`Location\` LIKE CONCAT('%', ?, '%')`;
+    conditions.push(`\`Location\` LIKE CONCAT('%', ?, '%')`);
+  }
+
+  if (conditions.length > 0) {
+    sql += ` WHERE ` + conditions.join(' AND ');
   }
 
   // 排序部分
-  sql += `ORDER BY CAST(REPLACE(SUBSTRING_INDEX(\`${validSortBy}\`, ')', 1), ',', '') AS UNSIGNED) ${validOrderBy}`;
+  sql += ` ORDER BY CAST(REPLACE(SUBSTRING_INDEX(\`${validSortBy}\`, ')', 1), ',', '') AS UNSIGNED) ${validOrderBy}`;
 
 
   try {

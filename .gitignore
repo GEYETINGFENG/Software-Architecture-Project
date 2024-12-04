@@ -1,3 +1,4 @@
 
 /.idea
-/backend/config/mysql_config.json
+/backend/config
+backend/config/mysql_config.json
