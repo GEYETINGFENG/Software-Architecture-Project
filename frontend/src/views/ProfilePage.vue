@@ -1,5 +1,9 @@
 <template>
   <div class="container">
+    <video autoplay muted loop class="video-background">
+      <source src="C:\Users\仇翊宸skyden\Desktop\CODE\Khan-Assignment\frontend\src\assets\img\204006-923133925_tiny.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
     <Topbar/>
     <div id="profile">
       <!-- 头部信息，分为左右两个容器 -->
@@ -23,19 +27,13 @@
       <div class="body-container">
         <!-- 中间选项卡 -->
         <div class="tabs-container">
-          <div class="tabs">
-            <button type="button" @click="setTab('myBlogs')" :class="activeTab==='myBlogs'?'activate-tab':''">我的博客</button>
-            <button type="button" @click="setTab('publishBlog')" :class="activeTab==='publishBlog'?'activate-tab':''">发布博客</button>
-            <button type="button" @click="setTab('likeRecords')" :class="activeTab==='likeRecords'?'activate-tab':''">点赞记录</button>
-            <button type="button" @click="setTab('favorites')" :class="activeTab==='favorites'?'activate-tab':''">收藏记录</button>
-          </div>
+          <button type="button" @click="setTab('myBlogs')" :class="activeTab==='myBlogs'?'activate-tab':''">我的博客</button>
+          <button type="button" @click="setTab('publishBlog')" :class="activeTab==='publishBlog'?'activate-tab':''">发布博客</button>
+          <button type="button" @click="setTab('likeRecords')" :class="activeTab==='likeRecords'?'activate-tab':''">点赞记录</button>
+          <button type="button" @click="setTab('favorites')" :class="activeTab==='favorites'?'activate-tab':''">收藏记录</button>
         </div>
         <!-- 内容展示 -->
         <div class="content">
-<!--          <div v-if="activeTab === 'myBlogs'">这是我的博客内容</div>-->
-<!--          <div v-if="activeTab === 'publishBlog'">这是发布博客页面</div>-->
-<!--          <div v-if="activeTab === 'likeRecords'">这是点赞记录页面</div>-->
-<!--          <div v-if="activeTab === 'favorites'">这是收藏记录页面</div>-->
           <component :is="selectComponents"/>
         </div>
       </div>
@@ -80,7 +78,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: calc(100vh - 16px);
+  height: 100vh;
   gap: 20px;
 }
 
@@ -95,7 +93,7 @@ export default {
 
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 0.5fr 1fr;
+  grid-template-rows: auto 1fr;
   grid-template-areas:
     "a b"
     "c c";
@@ -169,28 +167,21 @@ export default {
   display: flex;
   flex-direction: column;
   text-align: center;
-  justify-content: center;
 }
 
 .tabs-container {
   width: 100%;
-  height: 10%;
-  min-height: 60px;
+  height: 50px;
   background-color: rgba(245, 139, 40, 0.8);
   padding: 0 0;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-}
-
-.tabs {
-  height: 100%;
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: repeat(4,1fr);
-
-  padding: 0 0;
 }
 
-.tabs button {
+.tabs-container button {
   padding: 10px 20px;
   background-color: #f58b28;
   color: white;
@@ -200,7 +191,7 @@ export default {
 }
 
 
-.tabs button:hover {
+.tabs-container button:hover {
   background-color: rgba(206, 110, 31, 0.75);
 }
 
@@ -218,6 +209,21 @@ export default {
   margin: 20px;
   border-radius: 10px;
 }
+
+.video-background {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  opacity: 0.7; /* 设置透明度为50% */
+  z-index: -100;
+  background-size: cover;
+  overflow: hidden;
+}
+
 </style>
 
 
