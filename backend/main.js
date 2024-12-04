@@ -6,8 +6,11 @@ import mysql from 'mysql2'
 import { Quiz } from './models/Quiz.js'; 
 import { User } from './models/User.js'; 
 import cors from '@koa/cors';
+import mysql_config from './config/mysql_config.json';
+
 const app = new Koa();
 const router = new Router();
+
 
 // MongoDB 连接
 mongoose.connect('mongodb://localhost:27017/quiz-battle', {})
@@ -21,10 +24,10 @@ mongoose.connect('mongodb://localhost:27017/quiz-battle', {})
 
 // 创建 MySQL 连接池
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root', // 你的数据库用户名
-  password: '123456', // 你的数据库密码
-  database: 'qs_ranking', // 你的数据库名称
+  host: mysql_config.host, // 你的数据库地址
+  user: mysql_config.user, // 你的数据库用户名
+  password: mysql_config.password, // 你的数据库密码
+  database: mysql_config.database, // 你的数据库名称
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
