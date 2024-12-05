@@ -3,6 +3,7 @@ import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
 import mongoose from 'mongoose';
 import mysql from 'mysql2'
+import { Article } from './models/Article.js'; 
 import { Quiz } from './models/Quiz.js'; 
 import { User } from './models/User.js'; 
 import cors from '@koa/cors';
@@ -10,7 +11,7 @@ const app = new Koa();
 const router = new Router();
 
 // MongoDB 连接
-mongoose.connect('mongodb://localhost:27017/quiz-battle', {})
+mongoose.connect('mongodb://localhost:27017/SoftwareArchitecure', {})
   .then(() => {
     console.log('Connected to MongoDB');
   })
@@ -45,24 +46,20 @@ pool.getConnection((err, connection) => {
 app.use(bodyParser());
 app.use(cors());
 
-// 查询接口
+// QS排名界面
+// 大学查询接口
 router.get('/University', async (ctx) => {
   const { year, name, location, sort_by, order_by } = ctx.query;
-
   // 根据年份选择表名
   let tableName = year === '2024' ? '2024university_rankings' : '2025university_rankings';
-
   // 确保 name 和 location 为空时默认设置为空字符串 ""
   const validName = name || '';
   const validLocation = location || '';
-
   // 排序字段，默认为 "This_Year_Rank" 和 "ASC"
   const validSortBy = sort_by && sort_by !== '' ? sort_by : 'This_Year_Rank';
   const validOrderBy = order_by && order_by !== '' ? order_by : 'ASC';
-
   // 构建 SQL 查询
   let sql = `SELECT * FROM \`${tableName}\` `;
-
   // 根据参数条件构建查询语句
   if (validName) {
     sql += ` WHERE \`Institution_Name\` LIKE CONCAT('%', ?, '%')`;
@@ -70,15 +67,11 @@ router.get('/University', async (ctx) => {
   if (validLocation) {
     sql += ` WHERE \`Location\` LIKE CONCAT('%', ?, '%')`;
   }
-
   // 排序部分
   sql += `ORDER BY CAST(REPLACE(SUBSTRING_INDEX(\`${validSortBy}\`, ')', 1), ',', '') AS UNSIGNED) ${validOrderBy}`;
-
-
   try {
     // 执行查询，传入有效的查询参数
     const [rows] = await pool.promise().query(sql, [validName, validLocation].filter(Boolean));
-
     // 返回查询结果
     ctx.body = { data: rows };
   } catch (error) {
@@ -88,7 +81,7 @@ router.get('/University', async (ctx) => {
   }
 });
 
-// 用户注册
+// 用户注册接口
 router.post('/api/users/register', async (ctx) => {
   const { username, email, password } = ctx.request.body;
 
@@ -113,7 +106,7 @@ router.post('/api/users/register', async (ctx) => {
   }
 });
 
-// 用户登录
+// 用户登录接口
 router.post('/api/users/login', async (ctx) => {
   const { username, password } = ctx.request.body;
 
@@ -144,6 +137,44 @@ router.post('/api/users/login', async (ctx) => {
   }
 });
 
+
+// 发布新帖子 
+router.post('/blog/publish', async (ctx) => {
+  const { title, author, context } = ctx.request.body;
+
+  try {
+    // 查询是否已有该用户
+    const existingTitle = await User.findOne({ title });
+    if (existingTitle) {
+      ctx.status = 400; // Bad Request
+      ctx.body = { message: 'Title already exists' };
+      return;
+    }
+
+    // 创建新用户
+    const article = new Article({title, author, context });
+    await article.save();
+    ctx.status = 201; // Created
+    ctx.body = { message: 'article publish successfully' };
+  } catch (error) {
+    console.error('Error during registration:', error);
+    ctx.status = 500; // Internal Server Error
+    ctx.body = { message: 'Failed to publish' };
+  }
+});
+
+// //拉取帖子
+// router.get('/api/blog/get', async (ctx) => {
+//     try {
+//       const articles = await Article.find(); // 假设 Article 模型已经定义
+//       ctx.status = 200;
+//       ctx.body = articles;
+//     } catch (error) {
+//       console.error('Error fetching articles:', error);
+//       ctx.status = 500;
+//       ctx.body = { message: 'Failed to fetch articles' };
+//     }
+//   });
 
 // 创建选择题
 router.post('/api/quizzes', async (ctx) => {
