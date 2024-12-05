@@ -7,8 +7,11 @@ import { Article } from './models/Article.js';
 import { Quiz } from './models/Quiz.js'; 
 import { User } from './models/User.js'; 
 import cors from '@koa/cors';
+import mysql_config from './config/mysql_config.json';
+
 const app = new Koa();
 const router = new Router();
+
 
 // MongoDB 连接
 mongoose.connect('mongodb://localhost:27017/SoftwareArchitecure', {})
@@ -22,10 +25,10 @@ mongoose.connect('mongodb://localhost:27017/SoftwareArchitecure', {})
 
 // 创建 MySQL 连接池
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root', // 你的数据库用户名
-  password: '123456', // 你的数据库密码
-  database: 'qs_ranking', // 你的数据库名称
+  host: mysql_config.host, // 你的数据库地址
+  user: mysql_config.user, // 你的数据库用户名
+  password: mysql_config.password, // 你的数据库密码
+  database: mysql_config.database, // 你的数据库名称
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
@@ -46,9 +49,8 @@ pool.getConnection((err, connection) => {
 app.use(bodyParser());
 app.use(cors());
 
-// QS排名界面
-// 大学查询接口
-router.get('/University', async (ctx) => {
+// 查询接口
+router.get('/qsRanking', async (ctx) => {
   const { year, name, location, sort_by, order_by } = ctx.query;
   // 根据年份选择表名
   let tableName = year === '2024' ? '2024university_rankings' : '2025university_rankings';
@@ -61,14 +63,22 @@ router.get('/University', async (ctx) => {
   // 构建 SQL 查询
   let sql = `SELECT * FROM \`${tableName}\` `;
   // 根据参数条件构建查询语句
+  let conditions = [];
   if (validName) {
-    sql += ` WHERE \`Institution_Name\` LIKE CONCAT('%', ?, '%')`;
+    conditions.push(`\`Institution_Name\` LIKE CONCAT('%', ?, '%')`);
   }
   if (validLocation) {
-    sql += ` WHERE \`Location\` LIKE CONCAT('%', ?, '%')`;
+    conditions.push(`\`Location\` LIKE CONCAT('%', ?, '%')`);
   }
+
+  if (conditions.length > 0) {
+    sql += ` WHERE ` + conditions.join(' AND ');
+  }
+
   // 排序部分
-  sql += `ORDER BY CAST(REPLACE(SUBSTRING_INDEX(\`${validSortBy}\`, ')', 1), ',', '') AS UNSIGNED) ${validOrderBy}`;
+  sql += ` ORDER BY CAST(REPLACE(SUBSTRING_INDEX(\`${validSortBy}\`, ')', 1), ',', '') AS UNSIGNED) ${validOrderBy}`;
+
+
   try {
     // 执行查询，传入有效的查询参数
     const [rows] = await pool.promise().query(sql, [validName, validLocation].filter(Boolean));
