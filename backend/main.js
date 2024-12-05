@@ -12,14 +12,14 @@ const app = new Koa();
 const router = new Router();
 
 
-// MongoDB 连接
-mongoose.connect('mongodb://localhost:27017/quiz-battle', {})
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch(err => {
-    console.error('Error connecting to MongoDB', err);
-  });
+// // MongoDB 连接
+// mongoose.connect('mongodb://localhost:27017/quiz-battle', {})
+//   .then(() => {
+//     console.log('Connected to MongoDB');
+//   })
+//   .catch(err => {
+//     console.error('Error connecting to MongoDB', err);
+//   });
 
 
 // 创建 MySQL 连接池
@@ -50,7 +50,8 @@ app.use(cors());
 
 // 查询接口
 router.get('/qsRanking', async (ctx) => {
-  const { year, name, location, sort_by, order_by } = ctx.query;
+  const { name, year, location, sort_by, order_by } = ctx.query;
+  console.log('Received parameters:', { name, year, location, sort_by, order_by });
 
   // 根据年份选择表名
   let tableName = year === '2024' ? '2024university_rankings' : '2025university_rankings';
@@ -68,11 +69,14 @@ router.get('/qsRanking', async (ctx) => {
 
   // 根据参数条件构建查询语句
   let conditions = [];
+  let queryParams = [];
   if (validName) {
     conditions.push(`\`Institution_Name\` LIKE CONCAT('%', ?, '%')`);
+    queryParams.push(validName);
   }
-  if (validLocation) {
+  if (validLocation && validLocation !== 'All') {
     conditions.push(`\`Location\` LIKE CONCAT('%', ?, '%')`);
+    queryParams.push(validLocation);
   }
 
   if (conditions.length > 0) {
@@ -80,14 +84,13 @@ router.get('/qsRanking', async (ctx) => {
   }
 
   // 排序部分
-  sql += ` ORDER BY CAST(REPLACE(SUBSTRING_INDEX(\`${validSortBy}\`, ')', 1), ',', '') AS UNSIGNED) ${validOrderBy}`;
-
+  sql += ` ORDER BY CAST(REPLACE(REPLACE(SUBSTRING_INDEX(\`${validSortBy}\`, '-', 1), '=', ''), '+', '') AS UNSIGNED) ${validOrderBy}`;
 
   try {
     // 执行查询，传入有效的查询参数
-    const [rows] = await pool.promise().query(sql, [validName, validLocation].filter(Boolean));
-
+    const [rows] = await pool.promise().query(sql, queryParams);
     // 返回查询结果
+    console.log(sql)
     ctx.body = { data: rows };
   } catch (error) {
     console.error(error);
