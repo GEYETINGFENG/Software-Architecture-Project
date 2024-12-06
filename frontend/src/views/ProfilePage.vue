@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <video autoplay muted loop class="video-background">
-      <source src="C:\Users\仇翊宸skyden\Desktop\CODE\Khan-Assignment\frontend\src\assets\img\204006-923133925_tiny.mp4" type="video/mp4">
+      <source src="E:\khan大作业\Khan-Assignment\frontend\src\assets\img\204006-923133925_tiny.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
     <Topbar/>

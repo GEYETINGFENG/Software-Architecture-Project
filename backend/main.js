@@ -7,7 +7,10 @@ import { Article } from './models/Article.js';
 import { Quiz } from './models/Quiz.js'; 
 import { User } from './models/User.js'; 
 import cors from '@koa/cors';
-import mysql_config from './config/mysql_config.json';
+import mysql_config from './config/mysql_config.json' assert { type: 'json' };
+import koaJwt from 'koa-jwt';
+import jwt from 'jsonwebtoken'
+const secretKey = 'my_app_secret';
 
 const app = new Koa();
 const router = new Router();
@@ -45,10 +48,75 @@ pool.getConnection((err, connection) => {
 });
 
 
+// 登录接口
+router.post('/api/users/login', async (ctx) => {
+  const { username, password } = ctx.request.body;
+  console.log(`Login attempt with username: ${username}`);
+  console.log(`Received encrypted password: ${password}`);
+
+  try {
+      const foundUser = await User.findOne({ username });
+      
+      if (foundUser) {
+          console.log(`User found: ${foundUser.username}`);
+          console.log(`Stored encrypted password: ${foundUser.password}`);
+
+          if (foundUser.password === password) {
+              console.log('Password match, login successful.');
+              const token = jwt.sign({ uid: foundUser.username }, secretKey, { expiresIn: '24h' });
+               console.log('Generated Token:', token);
+              ctx.body = { status: 0, token };
+          } else {
+              console.log('Password does not match.');
+              ctx.status = 401;  // Unauthorized
+              ctx.body = { status: 1, msg: 'Username or Password error.' };
+          }
+      } else {
+          console.log('User not found.');
+          ctx.status = 401;  // Unauthorized
+          ctx.body = { status: 1, msg: 'Username or Password error.' };
+      }
+  } catch (error) {
+      console.error('Error during login:', error);
+      ctx.status = 500;
+      ctx.body = 'Internal server error';
+  }
+});
+
+
+// 注册接口
+router.post('/api/users/register', async (ctx) => {
+  const { username, email, password } = ctx.request.body;
+
+  try {
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+          ctx.body = { status: 1, msg: 'User Already Exist.' };
+          console.log('User has been created')
+      } else {
+          const newUser = new User({ username, email ,password});
+          await newUser.save();
+          ctx.body = { status: 0, msg: 'Success' };
+          console.log(`New user created: ${username}`); 
+      }
+  } catch (error) {
+      console.error('Error during signup:', error);
+      ctx.status = 500;
+      ctx.body = 'Internal server error';
+  }
+});
+
+
 // 中间件
 app.use(bodyParser());
 app.use(cors());
 
+// JWT 中间件，排除 /login 路径
+app.use(
+  koaJwt({
+    secret: secretKey
+  }).unless({ path:[/^\/api\/users\/login/, /^\/api\/users\/register/] })
+);
 // 查询接口
 router.get('/qsRanking', async (ctx) => {
   const { year, name, location, sort_by, order_by } = ctx.query;
@@ -91,87 +159,30 @@ router.get('/qsRanking', async (ctx) => {
   }
 });
 
-// 用户注册接口
-router.post('/api/users/register', async (ctx) => {
-  const { username, email, password } = ctx.request.body;
 
-  try {
-    // 查询是否已有该用户
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      ctx.status = 400; // Bad Request
-      ctx.body = { message: 'Username already exists' };
-      return;
-    }
+// // 发布新帖子 
+// router.post('/blog/publish', async (ctx) => {
+//   const { title, author, context } = ctx.request.body;
 
-    // 创建新用户
-    const user = new User({ username, email, password });
-    await user.save();
-    ctx.status = 201; // Created
-    ctx.body = { message: 'User registered successfully' };
-  } catch (error) {
-    console.error('Error during registration:', error);
-    ctx.status = 500; // Internal Server Error
-    ctx.body = { message: 'Failed to register user' };
-  }
-});
+//   try {
+//     // 查询是否已有该用户
+//     const existingTitle = await User.findOne({ title });
+//     if (existingTitle) {
+//       ctx.status = 400; // Bad Request
+//       ctx.body = { message: 'Title already exists' };
+//       return;
+//     }
 
-// 用户登录接口
-router.post('/api/users/login', async (ctx) => {
-  const { username, password } = ctx.request.body;
-
-  try {
-    // 查询用户是否存在
-    const user = await User.findOne({ username });
-    if (!user) {
-      ctx.status = 404; // Not Found
-      ctx.body = { message: 'User not found' };
-      return;
-    }
-
-    // 比较密码
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      ctx.status = 401; // Unauthorized
-      ctx.body = { message: 'Invalid credentials' };
-      return;
-    }
-
-    // 登录成功的逻辑，比如生成JWT等
-    ctx.status = 200; // OK
-    ctx.body = { message: 'Login successful', userId: user._id };
-  } catch (error) {
-    console.error('Error during login:', error);
-    ctx.status = 500; // Internal Server Error
-    ctx.body = { message: 'Login failed' };
-  }
-});
-
-
-// 发布新帖子 
-router.post('/blog/publish', async (ctx) => {
-  const { title, author, context } = ctx.request.body;
-
-  try {
-    // 查询是否已有该用户
-    const existingTitle = await User.findOne({ title });
-    if (existingTitle) {
-      ctx.status = 400; // Bad Request
-      ctx.body = { message: 'Title already exists' };
-      return;
-    }
-
-    // 创建新用户
-    const article = new Article({title, author, context });
-    await article.save();
-    ctx.status = 201; // Created
-    ctx.body = { message: 'article publish successfully' };
-  } catch (error) {
-    console.error('Error during registration:', error);
-    ctx.status = 500; // Internal Server Error
-    ctx.body = { message: 'Failed to publish' };
-  }
-});
+//     const article = new Article({title, author, context });
+//     await article.save();
+//     ctx.status = 201; // Created
+//     ctx.body = { message: 'article publish successfully' };
+//   } catch (error) {
+//     console.error('Error during registration:', error);
+//     ctx.status = 500; // Internal Server Error
+//     ctx.body = { message: 'Failed to publish' };
+//   }
+// });
 
 // //拉取帖子
 // router.get('/api/blog/get', async (ctx) => {
