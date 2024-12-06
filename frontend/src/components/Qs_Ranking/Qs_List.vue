@@ -1,6 +1,5 @@
 <template>
   <div class="table-container">
-    <!--suppress JSValidateTypes -->
     <el-table
         ref="tableRef"
         :data="paginatedResponse"
