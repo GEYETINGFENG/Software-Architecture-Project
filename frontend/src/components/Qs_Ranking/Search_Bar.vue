@@ -1,9 +1,7 @@
 <template>
   <div class="search-college">
-    <div class="input-container">
-      <input type="text" v-model="collegeName" placeholder="Enter college name" class="input-field">
-      <button @click="emitQueryQS" class="search-button">🔍︎</button>
-    </div>
+    <input type="text" v-model="collegeName" placeholder="Enter college name" @keyup.enter="emitQueryQS" class="input-field">
+    <button @click="emitQueryQS" class="search-button">🔍︎</button>
   </div>
 </template>
 
@@ -32,23 +30,19 @@ export default {
 
 .search-college {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 15vh;
+  width: 90%;
   box-sizing: border-box;
+  margin: 5% auto;
 }
 
-.input-container {
-  display: flex;
-  width: 60%;
-  margin: 0 auto 10px auto;
-  justify-content: center;
-}
 
 .input-field {
-  outline-style: none ;
+  outline-style: none;
+  width: 75%;
+  height: 30px; /* Increased height */
   border: 1px solid #ccc;
   border-radius: 3px;
   padding: 13px 14px;
@@ -66,6 +60,7 @@ export default {
 
 .search-button {
   padding: 10px 20px;
+  height: 59px;
   background-color: #007BFF;
   color: white;
   border: none;

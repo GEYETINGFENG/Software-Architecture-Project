@@ -3,8 +3,8 @@ import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
 import mongoose from 'mongoose';
 import mysql from 'mysql2'
-import { Article } from './models/Article.js'; 
-import { Quiz } from './models/Quiz.js'; 
+import { Article } from './models/Article.js';
+import { Quiz } from './models/Quiz.js';
 import { User } from './models/User.js'; 
 import cors from '@koa/cors';
 import mysql_config from './config/mysql_config.json' assert { type: 'json' };
@@ -56,7 +56,7 @@ router.post('/api/users/login', async (ctx) => {
 
   try {
       const foundUser = await User.findOne({ username });
-      
+
       if (foundUser) {
           console.log(`User found: ${foundUser.username}`);
           console.log(`Stored encrypted password: ${foundUser.password}`);
@@ -97,7 +97,7 @@ router.post('/api/users/register', async (ctx) => {
           const newUser = new User({ username, email ,password});
           await newUser.save();
           ctx.body = { status: 0, msg: 'Success' };
-          console.log(`New user created: ${username}`); 
+          console.log(`New user created: ${username}`);
       }
   } catch (error) {
       console.error('Error during signup:', error);
@@ -119,24 +119,33 @@ app.use(
 );
 // 查询接口
 router.get('/qsRanking', async (ctx) => {
-  const { year, name, location, sort_by, order_by } = ctx.query;
+  const { name, year, location, sort_by, order_by } = ctx.query;
+  console.log('Received parameters:', { name, year, location, sort_by, order_by });
+
   // 根据年份选择表名
   let tableName = year === '2024' ? '2024university_rankings' : '2025university_rankings';
+
   // 确保 name 和 location 为空时默认设置为空字符串 ""
   const validName = name || '';
   const validLocation = location || '';
+
   // 排序字段，默认为 "This_Year_Rank" 和 "ASC"
   const validSortBy = sort_by && sort_by !== '' ? sort_by : 'This_Year_Rank';
   const validOrderBy = order_by && order_by !== '' ? order_by : 'ASC';
+
   // 构建 SQL 查询
   let sql = `SELECT * FROM \`${tableName}\` `;
+
   // 根据参数条件构建查询语句
   let conditions = [];
+  let queryParams = [];
   if (validName) {
     conditions.push(`\`Institution_Name\` LIKE CONCAT('%', ?, '%')`);
+    queryParams.push(validName);
   }
-  if (validLocation) {
+  if (validLocation && validLocation !== 'All') {
     conditions.push(`\`Location\` LIKE CONCAT('%', ?, '%')`);
+    queryParams.push(validLocation);
   }
 
   if (conditions.length > 0) {
@@ -144,12 +153,11 @@ router.get('/qsRanking', async (ctx) => {
   }
 
   // 排序部分
-  sql += ` ORDER BY CAST(REPLACE(SUBSTRING_INDEX(\`${validSortBy}\`, ')', 1), ',', '') AS UNSIGNED) ${validOrderBy}`;
-
+  sql += ` ORDER BY CAST(REPLACE(REPLACE(SUBSTRING_INDEX(\`${validSortBy}\`, '-', 1), '=', ''), '+', '') AS UNSIGNED) ${validOrderBy}`;
 
   try {
     // 执行查询，传入有效的查询参数
-    const [rows] = await pool.promise().query(sql, [validName, validLocation].filter(Boolean));
+    const [rows] = await pool.promise().query(sql, queryParams);
     // 返回查询结果
     ctx.body = { data: rows };
   } catch (error) {
@@ -160,7 +168,7 @@ router.get('/qsRanking', async (ctx) => {
 });
 
 
-// // 发布新帖子 
+// // 发布新帖子
 // router.post('/blog/publish', async (ctx) => {
 //   const { title, author, context } = ctx.request.body;
 

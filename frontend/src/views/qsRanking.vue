@@ -1,9 +1,14 @@
 <template>
   <Topbar/>
   <SearchCollege @collegeName="get_collegeName" @queryQS="queryQS"/>
-  <h3 id="test_prop">测试子元素数据传递：{{ sql_name }} - {{sql_year}} - {{sql_region}}</h3>
   <qs_Intro />
-  <Qs_Param_Select @yearPicked="get_year" @regionPicked="get_region" @queryQS="queryQS" />
+  <Qs_Param_Select @yearPicked="get_year" @locationPicked="get_location" @queryQS="queryQS" />
+  <Qs_List
+      :response="response"
+      @orderBy="get_orderBy"
+      @sortBy="get_sortBy"
+      @queryQS="queryQS"
+  />
 </template>
 
 <script>
@@ -11,8 +16,9 @@ import axios from 'axios';
 
 import Topbar from "@/components/Topbar.vue";
 import SearchCollege from "@/components/Qs_Ranking/Search_Bar.vue";
-import qs_Intro from "@/components/Qs_Ranking/Qs_Intro.vue";
+import Qs_Intro from "@/components/Qs_Ranking/Qs_Intro.vue";
 import Qs_Param_Select from "@/components/Qs_Ranking/Qs_Param_Select.vue";
+import Qs_List from "@/components/Qs_Ranking/Qs_List.vue";
 
 
 export default {
@@ -20,17 +26,18 @@ export default {
   components: {
     Topbar,
     SearchCollege,
-    qs_Intro,
+    Qs_Intro,
     Qs_Param_Select,
+    Qs_List,
   },
   data() {
     return {
-      sqlQuery: "",
       sql_name: "",
       sql_year: "2025",
-      sql_region: "All",
+      sql_location: "",
       sql_sort_by: "This_Year_Rank",
       sql_order_by: "ASC",
+      response:[],
     };
   },
   mounted() {
@@ -41,38 +48,37 @@ export default {
       try {
         const response = await axios.get("http://localhost:3000/qsRanking", {
           params: {
-            collegeName: this.sql_name,
+            name: this.sql_name,
             year: this.sql_year,
-            region: this.sql_region,
-            sortBy: this.sql_sort_by,
-            orderBy: this.sql_order_by,
+            location: this.sql_location,
+            sort_by: this.sql_sort_by,
+            order_by: this.sql_order_by,
           },
         });
-        console.log(response.data);
+        this.response = response.data.data;
       }catch (error) {
         console.log(error);
       }
-      console.log("Query QS ranking");
     },
     get_collegeName(collegeName) {
-      // 获取子组件传递的高校名称
       this.sql_name = collegeName;
     },
     get_year(year) {
-      // 获取子组件传递的年份
       this.sql_year = year;
     },
-    get_region(region) {
-      // 获取子组件传递的地区
-      this.sql_region = region;
-    }
+    get_location(location) {
+      this.sql_location = location === "All" ? "" : location;
+    },
+    get_orderBy(orderBy) {
+      this.sql_order_by = orderBy;
+      console.log(this.sql_order_by);
+    },
+    get_sortBy(sortBy) {
+      this.sql_sort_by = sortBy;
+    },
   }
 }
 </script>
 
 <style scoped>
-
-#test_prop {
-  margin: 0 0 0 0;
-}
 </style>

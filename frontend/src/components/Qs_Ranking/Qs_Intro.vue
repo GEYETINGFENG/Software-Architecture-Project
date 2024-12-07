@@ -32,11 +32,18 @@ export default {
 .intro-container {
   display: flex;
   align-items: center;
-
+  justify-content: center;
+  width: 75%;
+  height: 200px;
+  margin: -10px auto 0;
+  padding-top: 20px ;
+  padding-bottom: 20px;
+  border-top: 2px solid #003485;
+  border-bottom: 2px solid #003485;
 }
 
 .intro-container img {
-  margin-right: 10px;
+  margin-right: 20px;
 }
 
 .text_container {
@@ -46,7 +53,7 @@ export default {
 
 .text_container > * {
   margin-top: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 #intro_title {

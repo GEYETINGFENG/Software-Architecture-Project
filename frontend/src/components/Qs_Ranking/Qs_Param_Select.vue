@@ -1,6 +1,6 @@
 <template>
   <div class="param-select">
-    <div class="button-container">
+    <div class="button-container" ref="topAnchor">
       <div class="button-group">
         <label>Year:</label>
         <button
@@ -12,13 +12,13 @@
         </button>
       </div>
       <div class="button-group">
-        <label>Region:</label>
+        <label>Location:</label>
         <button
-            v-for="region in regions"
-            :key="region"
-            :class="{'active': regionPicked === region}"
-            @click="regionPicked = region"
-        >{{ region }}
+            v-for="location in locations"
+            :key="location"
+            :class="{'active': locationPicked === location}"
+            @click="locationPicked = location"
+        >{{ location }}
         </button>
       </div>
       <div class="button-group">
@@ -35,23 +35,23 @@ export default {
   data() {
     return {
       yearPicked: "2025",
-      regionPicked: "All",
+      locationPicked: "All",
       years: ["2025", "2024"],
-      regions: ["All", "United Kingdom", "United States", "Canada", "Australia", "China", "Singapore"],
+      locations: ["All", "United Kingdom", "United States", "Canada", "Australia", "China", "Singapore"],
     };
   },
   watch: {
     yearPicked(newVal) {
       this.$emit("yearPicked", newVal);
     },
-    regionPicked(newVal) {
-      this.$emit("regionPicked", newVal);
+    locationPicked(newVal) {
+      this.$emit("locationPicked", newVal);
     },
   },
   methods: {
     resetFilter() {
       this.yearPicked = "2025";
-      this.regionPicked = "All";
+      this.locationPicked = "All";
     },
   },
 }
@@ -62,9 +62,13 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  width: 75%;
+  margin: 30px auto;
+  padding: 10px 0 0 20px;
 }
 
 .button-group {
+  margin-top: 2px;
   display: flex;
   align-items: center;
   margin-bottom: 10px;
@@ -80,7 +84,7 @@ export default {
   padding: 10px 20px;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10px;
   cursor: pointer;
 }
 
