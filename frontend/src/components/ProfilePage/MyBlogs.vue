@@ -8,11 +8,15 @@
             <h3>{{ blog.title }}</h3>
             <p>{{ blog.content }}</p>
             <div class="operate-view" v-if="detailOpen">
-              <button type="button" @click.stop="clickLike"><Like/>{{iconNum}}</button>
+              <button type="button" @click.stop="clickLike" class="like_img"  >
+                <img src="../../assets/img/like.svg" alt="3213213">
+                {{iconNum}}
+              </button>
               <button type="button" @click.stop="clickComment"><Comment/>{{commentNum}}</button>
               <button type="button" @click.stop="clickStar"><Star/>{{starNum}}</button>
               <button type="button" @click.stop="clickDelete"><Delete/>{{deleteNum}}</button>
             </div>
+
           </div>
         </div>
       </div>
@@ -34,11 +38,10 @@
 
 <script>
 import {ChatLineSquare, Comment, Delete, Star} from "@element-plus/icons-vue";
-import Like from "@/components/icon/like.vue";
 
 export default {
   name: "MyBlog",
-  components: {Comment, Delete, Star, ChatLineSquare, Like},
+  components: {Comment, Delete, Star, ChatLineSquare},
   data() {
     return {
       blogs: [
@@ -297,5 +300,6 @@ export default {
 .comment-operate-view button:hover{
   background-color: rgba(0, 0, 0, 0.1);
 }
+
 
 </style>

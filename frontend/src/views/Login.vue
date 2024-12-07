@@ -148,7 +148,7 @@ export default {
         if (response.data.status === 0) {
           const token = response.data.token;
           localStorage.setItem('jwt-token', token);
-          this.$router.push('/profile');//本来想推送到主页，但是主页没做出来
+          this.$router.push('/mainPage');//本来想推送到主页，但是主页没做出来
         } else {
           this.error = response.data.msg || 'Login failed. Please check your credentials.';
         }
