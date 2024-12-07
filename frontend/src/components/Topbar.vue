@@ -16,11 +16,20 @@
       return {
         // 导航项数据
         navItems: [
+<<<<<<< Updated upstream
           { text: 'Competition', link: '#' },
           { text: 'home', link: '#' },
           { text: 'QS', link: '#' },
           { text: 'Blog', link: '#' },
           { text: 'profile', link: '#' }
+=======
+          { text: 'Competition', link: '/Quiz' },
+          { text: 'home', link: '/mainPage' },
+          { text: 'QS', link: '/qsRanking' },
+          { text: 'Blog', link: '/blog' },
+          { text: 'Profile', link: '/profile' }
+
+>>>>>>> Stashed changes
         ]
       };
     }

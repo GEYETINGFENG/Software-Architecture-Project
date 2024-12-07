@@ -28,7 +28,11 @@
 <style >
 
 .innerfooter {
+<<<<<<< Updated upstream
   background-image: url('../assets/img/blogback.jpg'); 
+=======
+  background-color:rgba(243, 162, 23, 0.486);
+>>>>>>> Stashed changes
   padding: 10px;
   left: 0;
   right: 0;

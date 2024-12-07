@@ -1,5 +1,12 @@
 
 <template>
+<<<<<<< Updated upstream
+=======
+  <video autoplay muted loop class="video-background">
+      <source src="../assets/img/204006-923133925_tiny.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+>>>>>>> Stashed changes
     <div id="blog">
       <el-container>
         <el-header>
@@ -65,7 +72,10 @@ provide('showAllPosts', showAllPosts)
     position: fixed;
     display: flex;
     flex-direction: column;
+<<<<<<< Updated upstream
     background-image: url('../assets/img/blogback.jpg'); 
+=======
+>>>>>>> Stashed changes
     height: 100%; /* 确保body填满整个视口高度 */
     margin: 0; /* 移除默认的边距 */
     background-size: cover; /* 确保图片覆盖整个背景 */
@@ -84,4 +94,22 @@ provide('showAllPosts', showAllPosts)
     display: flex;
     width: 100%;
   }
+<<<<<<< Updated upstream
+=======
+
+  .video-background {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  opacity: 0.7; /* 设置透明度为50% */
+  z-index: -100;
+  background-size: cover;
+  overflow: hidden;
+}
+
+>>>>>>> Stashed changes
   </style>

@@ -1,6 +1,19 @@
 {
   "dependencies": {
+<<<<<<< Updated upstream
     "element": "^0.1.4",
     "element-ui": "^2.15.14"
+=======
+    "@koa/cors": "^5.0.0",
+    "element": "^0.1.4",
+    "element-ui": "^2.15.14",
+    "jsonwebtoken": "^9.0.2",
+    "koa": "^2.15.3",
+    "koa-bodyparser": "^4.4.1",
+    "koa-jwt": "^4.0.4",
+    "koa-router": "^13.0.1",
+    "mongoose": "^8.8.4",
+    "mysql2": "^3.11.5"
+>>>>>>> Stashed changes
   }
 }
