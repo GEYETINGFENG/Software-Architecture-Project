@@ -1,21 +1,4 @@
 <template>
-<<<<<<< Updated upstream
-  <!-- 顶层容器 -->
-    <Topbar/>
-
-
-  <div class="container">
-    <h1>双人答题对战</h1>
-    
-    <!-- 输入和按钮区域 -->
-    <div class="input-section">
-      <!-- 房间ID输入框 -->
-      <input v-model="roomIdInput" placeholder="房间ID" />
-      <!-- 创建房间按钮 -->
-      <button class="primary-button" @click="createRoom">创建房间</button>
-      <!-- 加入房间按钮 -->
-      <button class="primary-button" @click="joinRoom">加入房间</button>
-=======
   <div class="app-container">
     <video autoplay muted loop class="video-background">
       <source src="../assets/img/Battel%20background.mp4" type="video/mp4">
@@ -26,7 +9,6 @@
     <!-- 引入QuizContent组件 -->
     <div class="middle-container">
       <QuizContent />
->>>>>>> Stashed changes
     </div>
 
     <!-- 显示房间信息，当房间已创建且游戏未完成时显示 -->
