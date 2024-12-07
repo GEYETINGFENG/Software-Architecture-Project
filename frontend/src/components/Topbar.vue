@@ -2,9 +2,9 @@
     <section class="nav">
       <ul>
         <li v-for="item in navItems" :key="item.text">
-          <a :href="item.link" :data-hover="item.text">
+          <router-link :to="item.link" :data-hover="item.text">
             <span>{{ item.text }}</span>
-          </a>
+          </router-link>
         </li>
       </ul>
     </section>
@@ -16,10 +16,10 @@
       return {
         // 导航项数据
         navItems: [
-          { text: 'Competition', link: '#' },
-          { text: 'QS', link: '#' },
-          { text: 'Blog', link: '#' },
-          { text: '其他', link: '#' }
+          { text: 'Competition', link: '/Quiz' },
+          { text: 'QS', link: '/qsRanking' },
+          { text: 'Blog', link: '/Login' },
+          { text: 'Profile', link: '/profile' }
         ]
       };
     }
@@ -29,12 +29,11 @@
   <style scoped>
   .nav {
     background: linear-gradient(to right, #ff7e5f, #feb47b); /* 渐变背景，温暖的橙色调 */
-    height: 50%;
+    height: 10%; /* 减小导航栏的高度 */
     width: 100%;
     position: relative;
     z-index: 1;
-    float: left;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加阴影让导航栏更立体 */
+    box-shadow: none; /* 取消导航栏的边框阴影 */
   }
   
   ul {
@@ -45,7 +44,7 @@
     justify-content: space-evenly; /* 自动分配间距，使各导航项均匀分布 */
     align-items: center; /* 垂直居中 */
     width: 100%; /* 宽度 100% 来填充屏幕 */
-  
+    margin: 0 0 0 0;
   }
   
   li {
