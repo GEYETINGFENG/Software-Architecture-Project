@@ -20,6 +20,14 @@ const routes = [
     {
       path: "/qsRanking",
       component: () => import("../views/QsRanking.vue")
+    },
+    {
+      path: "/profile",
+      component: () => import("../views/ProfilePage.vue")
+    },
+    {
+      path: "/mainPage",
+      component: () => import("../views/MainPage.vue")
     }
   ]
 

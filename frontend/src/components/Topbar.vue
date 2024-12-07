@@ -19,7 +19,7 @@
           { text: 'Competition', link: '/Quiz' },
           { text: 'QS', link: '/qsRanking' },
           { text: 'Blog', link: '/Login' },
-          { text: 'Other', link: '/Login' }
+          { text: 'Profile', link: '/profile' }
         ]
       };
     }
