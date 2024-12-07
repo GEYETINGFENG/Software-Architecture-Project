@@ -1,8 +1,16 @@
 <template>
   <div class="body-container">
+    <div class="input-container">
+      <el-input
+        v-model="title_input"
+        style="width: 75%;"
+        placeholder="输入博客标题"
+        clearable
+      />
+    </div>
     <div id="vditor"></div>
     <div class="button-view">
-      <button type="button">发布</button>
+      <button type="button" @click="publishBlog">发布</button>
     </div>
   </div>
 </template>
@@ -13,6 +21,18 @@ import "vditor/dist/index.css";
 
 export default {
   name: "PostBlog",
+  data() {
+    return {
+      title_input: "",
+    };
+  },
+
+  methods: {
+    publishBlog(){
+      console.log(this.title_input)
+      console.log(this.contentEditor.getValue())
+    }
+  },
 
   mounted() {
     this.contentEditor = new Vditor('vditor',{
@@ -34,6 +54,13 @@ export default {
 </script>
 
 <style scoped>
+.input-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 20px;
+  width: 100%;
+}
+
 #vditor{
   text-align: left;
 }
