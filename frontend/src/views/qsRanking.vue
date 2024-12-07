@@ -42,11 +42,16 @@ export default {
   },
   mounted() {
     this.queryQS();
+    console.log(this.response);
   },
   methods: {
     async queryQS() {
       try {
+        const token = localStorage.getItem("jwt-token");
         const response = await axios.get("http://localhost:3000/qsRanking", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           params: {
             name: this.sql_name,
             year: this.sql_year,

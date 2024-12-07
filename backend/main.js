@@ -63,7 +63,7 @@ router.post('/api/users/login', async (ctx) => {
 
           if (foundUser.password === password) {
               console.log('Password match, login successful.');
-              const token = jwt.sign({ uid: foundUser.username }, secretKey, { expiresIn: '24h' });
+              const token = jwt.sign({ username: foundUser.username }, secretKey, { expiresIn: '24h' });
                console.log('Generated Token:', token);
               ctx.body = { status: 0, token };
           } else {
@@ -117,6 +117,7 @@ app.use(
     secret: secretKey
   }).unless({ path:[/^\/api\/users\/login/, /^\/api\/users\/register/] })
 );
+
 // 查询接口
 router.get('/qsRanking', async (ctx) => {
   const { name, year, location, sort_by, order_by } = ctx.query;

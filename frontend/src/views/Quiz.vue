@@ -7,9 +7,8 @@
     <!-- 引入Topbar组件 -->
     <Topbar />
     <!-- 引入QuizContent组件 -->
-    <div class="middle-container">
-      <QuizContent />
-    </div>
+    <QuizStart @game-started="startGame" @roomID="getRoomID" v-if="!gameStarted"/>
+    <QuizAnswering v-if="gameStarted" :roomID="roomID"/>
   </div>
 </template>
 
@@ -17,13 +16,32 @@
 
 <script>
 import Topbar from '../components/Topbar.vue';
-import QuizContent from '../components/QuizContent.vue';
+import QuizStart from '../components/Quiz/QuizStart.vue';
+import QuizAnswering from '../components/Quiz/QuizAnswering.vue';
+
+
 
 export default {
   components: {
     Topbar,
-    QuizContent
+    QuizAnswering,
+    QuizStart
+  },
+  methods: {
+    startGame(newValue) {
+      this.gameStarted = newValue;
+    },
+    getRoomID(roomID) {
+      this.roomID = roomID;
+    }
+  },
+  data() {
+    return {
+      gameStarted: false,
+      roomID: ''
+    };
   }
+
 };
 </script>
 
@@ -49,10 +67,4 @@ export default {
   overflow: hidden;
 }
 
-.middle-container {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 </style>
