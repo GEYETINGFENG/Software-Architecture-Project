@@ -111,6 +111,7 @@
         this.errorMessage = message;
       });
     },
+
     methods: {
       createRoom() {
         this.socket.emit('createRoom', this.roomIdInput);
