@@ -7,7 +7,7 @@ import 'element-plus/dist/index.css'
 
 const app = createApp(App)
 app.use(router)
-app.mount(ElementPlus)
+app.use(ElementPlus)
 app.mount('#app')
 
 for(const key in ElIcons) {
