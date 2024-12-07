@@ -9,6 +9,7 @@
 
 <script setup>
     import { ref } from 'vue';
+    import { inject } from 'vue';
     import axios from 'axios'; // 导入 axios
 
     const posts = ref([]); // 用于存储展示的帖子

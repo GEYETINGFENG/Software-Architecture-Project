@@ -9,7 +9,7 @@
           <el-aside width="30%" > 
             <ContentInput class="ContentInput"/>
           </el-aside>
-          <el-container>
+          <el-container class="PostList" >
             <el-main>
                 <PostList />
             </el-main>
@@ -59,13 +59,10 @@ provide('showCollectedPosts', showCollectedPosts)
 provide('showAllPosts', showAllPosts)
   </script>
   
-
-
-
-
   <style scoped>
 
   #blog {
+    position: fixed;
     display: flex;
     flex-direction: column;
     background-image: url('../assets/img/blogback.jpg'); 
@@ -75,6 +72,8 @@ provide('showAllPosts', showAllPosts)
     background-position: center; /* 图片居中显示 */
     min-width: 100%; /* 确保背景至少覆盖整个视口高度 */
   }
+
+  
 
   .Navbar{
     position: fixed
