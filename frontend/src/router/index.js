@@ -24,6 +24,10 @@ const routes = [
     {
       path: "/profile",
       component: () => import("../views/ProfilePage.vue")
+    },
+    {
+      path: "/mainPage",
+      component: () => import("../views/MainPage.vue")
     }
   ]
 
