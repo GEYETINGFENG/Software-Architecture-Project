@@ -1,5 +1,5 @@
 <template>
-  <Topbar/>
+  <Topbar class="Topbar"/>
   <SearchCollege @collegeName="get_collegeName" @queryQS="queryQS"/>
   <qs_Intro />
   <Qs_Param_Select @yearPicked="get_year" @locationPicked="get_location" @queryQS="queryQS" />
@@ -86,4 +86,10 @@ export default {
 </script>
 
 <style scoped>
+
+.Topbar {
+  position: fixed;
+  height: 50px;
+}
+
 </style>

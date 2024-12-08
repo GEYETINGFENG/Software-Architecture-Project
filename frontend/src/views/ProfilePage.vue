@@ -4,20 +4,13 @@
       <source src="../assets/img/204006-923133925_tiny.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    <Topbar/>
-    <div class="body-block">
-      <div id="profile">
-        <!-- 头部信息，分为左右两个容器 -->
-        <!-- 左侧容器：头像和基本信息 -->
-        <div class="left-container">
-          <div>
-            <div class="avatar">头像</div>
-          </div>
-          <div class="profile-info info-list-row">
-            <p>用户名：Aberdeen Student</p>
-            <p>简介：我是一个喜欢学习的软件工程师</p>
-            <p>安全信息</p>
-          </div>
+    <Topbar class="Topbar"/>
+    <div id="profile">
+      <!-- 头部信息，分为左右两个容器 -->
+      <!-- 左侧容器：头像和基本信息 -->
+      <div class="left-container">
+        <div>
+          <div class="avatar">头像</div>
         </div>
         <!-- 右侧容器：统计数据 -->
         <div class="right-container info-list-row">
@@ -233,6 +226,10 @@ export default {
   overflow: hidden;
 }
 
+.Topbar {
+  position: fixed;
+  height: 50px;
+}
 </style>
 
 
