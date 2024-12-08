@@ -33,17 +33,17 @@
   
   <script>
   import Topbar from '../components/Topbar.vue';
+  import Quiz from './Quiz.vue';
   export default {
     name: 'MainPage',
     components: {
       Topbar
     },
     methods: {
-        startJourney() {
-        // Logic for starting the quiz battle journey
-        alert("Quiz battle coming soon!");
-        },
-        },
+    startJourney() {
+      this.$router.push({ path: '/quiz' });
+    }
+    }
     };
   </script>
   

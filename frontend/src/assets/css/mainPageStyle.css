@@ -4,8 +4,7 @@
     text-align: center;
     background-color: #f9f9f9;
     color: #333;
-    padding: 5%;
-    min-height: 90vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     }
@@ -14,29 +13,33 @@
     .hero {
     background: linear-gradient(to right, #e74c3c 0%, #f39c12 100%);
     color: white;
-    padding: 50px 20px;
+    padding: 100px 20px;
     justify-content: center;
     align-items: center;
     text-align: center;
     }
 
     .hero h1 {
-    font-size: 3rem;
+    font-size: 4rem;
     margin-bottom: 10px;
     }
 
     .hero p {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
     margin-bottom: 20px;
     }
 
     .cta-button {
-    padding: 10px 20px;
+    padding: 20px 40px;
     background-color: #ff8c00;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size:large;
+    font-style: italic;
+    font-family: 'Verdana', sans-serif;
+    font-weight: bold;
     }
 
     .cta-button:hover {
