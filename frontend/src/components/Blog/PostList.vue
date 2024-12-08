@@ -10,12 +10,8 @@
       <h2>{{ post.title }}</h2>
       <p>{{ post.context }}</p>
       <h6>total {{ post.likes }} likes</h6>
-      <div>
-        <el-button type="success" round @click.stop="likePost(post.articleId)">点赞</el-button>
-      </div>
-      <div>
-        <el-button type="warning" round @click.stop="collectPost(post.articleId)">收藏</el-button>
-      </div>
+        <el-button type="success" round @click.stop="likePost(post.articleId)" class="funbutton">点赞</el-button>
+        <el-button type="warning" round @click.stop="collectPost(post.articleId)" class="funbutton">收藏</el-button>
 
       <!-- 评论区域 -->
       <transition name="fade">
@@ -34,7 +30,7 @@
             <p>{{ comment.content }}</p>
           </div>
           <!-- 退出按钮 -->
-          <el-button type="danger" round @click.stop="viewPost(-1)">退出</el-button>
+          <el-button type="danger" round @click.stop="viewPost(-1)">EXIT</el-button>
         </div>
       </transition>
     </div>
@@ -65,11 +61,11 @@ function likePost(id) {
 }
 
 function collectPost(id) {
-  // 这里添加收藏帖子的逻辑
+  //收藏帖子的逻辑
 }
 
 function viewPost(id) {
-  // 只有点击退出按钮时才会退出弹窗，点击帖子时不做操作
+  // 只有点击退出按钮时退出弹窗
   if (id !== null) {
     currentPostId.value = id;
   }
@@ -90,14 +86,15 @@ function submitComment(postId) {
 
 <style>
 
-.el-butto{
+
+.funbutton{
   width: 100%;
 }
 
 /* 外层滚动容器样式 */
 .scrollbar {
   width: auto;
-  padding: 20px;
+  padding: 2%;
   background-color: #ffffff96;
   border-radius: 8px;
   height: 250%;
@@ -106,7 +103,7 @@ function submitComment(postId) {
 /* 帖子列表样式 */
 .post {
   border: 1px solid #e0e0e0;
-  padding: 20px;
+  padding: 20%;
   margin: 15px 0;
   width: 100%;
   max-width: 800px;
@@ -180,7 +177,7 @@ function submitComment(postId) {
   font-size: 14px;
 }
 
-.comment-input .el-button {
+.comment-input {
   align-self: flex-end;
 }
 
@@ -195,11 +192,6 @@ function submitComment(postId) {
 
 .comment:hover {
   background-color: #f0f0f0;
-}
-
-/* 按钮样式 */
-.el-button {
-  margin: 5px 0;
 }
 
 .inputbox {
@@ -233,19 +225,18 @@ function submitComment(postId) {
 
 .post {
   border: 1px solid #e0e0e0;
-  padding: 20px;
+  padding: 5%;
   margin: 15px 0;
   width: 100%;
   max-width: 800px;
   box-sizing: border-box;
   cursor: pointer;
   position: relative;
-  border-radius: 8px;
-  background-color: #fff;
   transition: all 0.3s ease;
   word-wrap: break-word;  /* 强制换行 */
   overflow-wrap: break-word; /* 强制换行 */
 }
+
 
 .post:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -380,7 +371,7 @@ function submitComment(postId) {
 
 /* 按钮样式 */
 .el-button {
-  margin: 0; /* 确保按钮之间没有额外的外边距 */
+  margin: 1%; /* 确保按钮之间没有额外的外边距 */
 }
 
 .post-fullscreen ~ .post {

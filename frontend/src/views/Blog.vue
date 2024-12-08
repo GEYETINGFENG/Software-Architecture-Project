@@ -9,13 +9,13 @@
         <el-header>
             <Navbar class="Navbar" />
         </el-header>
-        <el-container>
+        <el-container class="container">
           <el-aside width="30%" > 
             <ContentInput class="ContentInput"/>
           </el-aside>
           <el-container class="PostList" >
-            <el-main>
-                <PostList />
+            <el-main class="postsection">
+                <PostList class="PostList"/>
             </el-main>
           </el-container>
         </el-container>
@@ -29,9 +29,9 @@
   <script setup>
   import { ref, provide } from 'vue'
   import Navbar from '../components/Topbar.vue';
-  import PostList from '../components/PostList.vue';
-  import ContentInput from '../components/ContentInput.vue';
-  import Footer from '../components/Footer.vue';
+  import PostList from '../components/Blog/PostList.vue';
+  import ContentInput from '../components/Blog/ContentInput.vue';
+  import Footer from '../components/Blog/Footer.vue';
 
   // 所有的帖子数据
 const allPosts = ref([
@@ -76,7 +76,10 @@ provide('showAllPosts', showAllPosts)
     min-width: 100%; /* 确保背景至少覆盖整个视口高度 */
   }
 
-  
+  .ContentInput{
+    height: auto+50%;
+    z-index: 1;
+  }
 
   .Navbar{
     position: fixed
@@ -86,6 +89,8 @@ provide('showAllPosts', showAllPosts)
     position: fixed;
     display: flex;
     width: 100%;
+    height: 10%;
+    z-index: 100;
   }
 
   .video-background {
@@ -100,6 +105,11 @@ provide('showAllPosts', showAllPosts)
   z-index: -100;
   background-size: cover;
   overflow: hidden;
+}
+
+.PostList{
+  height: 40%;
+  bottom: 2%;
 }
 
   </style>
