@@ -3,9 +3,9 @@ import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
 import mongoose from 'mongoose';
 import mysql from 'mysql2'
-import { Article } from './models/Article.js';
-import { Quiz } from './models/Quiz.js';
-import { User } from './models/User.js'; 
+import { Article } from '../models/Article.js';
+import { Quiz } from '../models/Quiz.js';
+import { User } from '../models/User.js';
 import cors from '@koa/cors';
 import mysql_config from './config/mysql_config.json' assert { type: 'json' };
 import koaJwt from 'koa-jwt';

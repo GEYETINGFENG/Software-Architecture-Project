@@ -9,6 +9,7 @@
     </div>
     <div class="quiz-answering">
       <div v-if="puzzle">
+        <div class="timer">Time left: {{ timer }} seconds</div>
         <div class="answer_button_group">
           <button @click="this.answer_index = 0" :class="{'active': answer_index === 0}">{{ puzzle[question_index].options[0] }}</button>
           <button @click="this.answer_index = 1" :class="{'active': answer_index === 1}">{{ puzzle[question_index].options[1] }}</button>
@@ -27,23 +28,36 @@
 </template>
 
 <script>
-import { io } from 'socket.io-client';
-
 export default {
   name: 'QuizContent',
   methods: {
     submitAnswer() {
-      this.socket.emit('submitAnswer', this.roomID, this.username, this.question_index, this.answer_index);
+      this.socket.emit('submitAnswer', this.roomID, this.username, this.question_index, this.answer_index,this.timer);
       this.question_index++;
-    }
+      this.answer_index = 0;
     },
+    startTimer() {
+      this.timer = 150.000;
+      this.timerInterval = setInterval(() => {
+        if (this.timer > 0) {
+          this.timer = (this.timer - 0.005).toFixed(3);
+        } else {
+          this.submitAnswer();
+          this.completed = true;
+        }
+      }, 10);
+    },
+  },
+
   data() {
     return {
       puzzle: null,
       question_index: 0,
       answer_index: 0,
       completed: false,
-      correctAnswers: 0,
+      answeredQuestions: [],
+      timer: 0,
+      timerInterval: null,
     };
   },
   props: {
@@ -57,38 +71,41 @@ export default {
     },
     socket:{
       required: true
+    },
+    stopTimer: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   watch: {
     completed(newValue) {
       if (newValue) {
         this.$emit('game-completed', newValue);
+
       }
     },
-    correctAnswers(newValue) {
-      this.$emit('correctAnswer', newValue);
+    answeredQuestions(newValue) {
+      this.$emit('answeredQuestions', newValue);
+    },
+    userTimes(newValue) {
+      this.$emit('userTimes', newValue);
+    },
+    stopTimer(newValue){
+      clearInterval(this.timerInterval);
     }
   },
   mounted() {
 
-    this.socket.emit('getQuestions', this.roomID);
-
     this.socket.on('questions', async (puzzle) => {
       try {
-        console.log('Received questions from server');
         this.puzzle = puzzle;
+        this.startTimer();
       } catch (error) {
         console.error('Error receiving questions from server', error);
       }
     });
-    this.socket.on('AllQuestionCompleted', (username, correctAnswer) => {
-      console.log('All questions completed', username, this.username);
-      if (username === this.username) {
-        this.correctAnswers = correctAnswer;
-        this.completed = true;
-      }
-    });
-  }
+  },
 };
 </script>
 

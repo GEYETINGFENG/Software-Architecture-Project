@@ -1,11 +1,22 @@
 <script>
 
-import quiz from "@/views/Quiz.vue";
-
 export default {
   name: "QuizResult",
   props:{
     username:{
+      type: String,
+      required: true
+    },
+    userTimes: {
+      type: Object,
+      required: true,
+      // { userA:50.69, userB: 41.69}
+    },
+    user_result:{
+      type: Object,
+      required: false,
+    },
+    roomID:{
       type: String,
       required: true
     },
@@ -15,101 +26,94 @@ export default {
   },
   data(){
     return{
-      roomID: 111,
       quizTime: 100,
-      accuracy: 0,
-      quizResult:[
-            {
-              question: "I have cities, but no houses. I have forests, but no trees. I have rivers, but no water. What am I?",
-              options: ["A map", "A dream", "A movie", "A painting"],
-              user_answer: "A map",
-              answer: "A map"
-            },
-
-            {
-              question: "The more you take, the more you leave behind. What am I?",
-              options: ["Time", "Footsteps", "Memory", "Holes"],
-              user_answer: "Time",
-              answer: "Footsteps"
-            },
-
-            {
-              question: "What comes once in a minute, twice in a moment, but never in a thousand years?",
-              options: ["The letter 'M'", "A star", "An eclipse", "A century"],
-              user_answer: "The letter 'M'",
-              answer: "The letter 'M'"
-            },
-
-            {
-              question: "What has keys but can't open locks?",
-              options: ["A piano", "A map", "A computer", "A treasure chest"],
-              user_answer: "A piano",
-              answer: "A piano"
-            },
-
-            {
-              question: "If two’s company and three’s a crowd, what are four and five?",
-              options: ["A party", "Nine", "A team", "A band"],
-              user_answer: "A party",
-              answer: "Nine"
-            },
-
-            {
-              question: "What is so fragile that saying its name breaks it?",
-              options: ["Silence", "Glass", "Love", "Trust"],
-              user_answer: "Silence",
-              answer: "Silence"
-            },
-
-            {
-              question: "What is always in front of you but can’t be seen?",
-              options: ["The future", "Air", "Time", "A mirror"],
-              user_answer: "The future",
-              answer: "The future"
-            },
-
-            {
-              question: "I am not alive, but I grow; I don’t have lungs, but I need air; I don’t have a mouth, but water kills me. What am I?",
-              options: ["Fire", "Clouds", "A plant", "A shadow"],
-              user_answer: "Fire",
-              answer: "Fire"
-            },
-
-            {
-              question: "What can travel around the world while staying in the corner?",
-              options: ["A stamp", "A clock", "A letter", "A satellite"],
-              user_answer: "A stamp",
-              answer: "A stamp"
-            },
-
-            {
-              question: "What has a head, a tail, but no body?",
-              options: ["A coin", "A snake", "A shadow", "A comet"],
-              user_answer: "A coin",
-              answer: "A coin"
-            }
-      ]
+      other_username:""
     }
   },
   methods:{
-    calAccuracy(){
-      let quizResultNum = this.quizResult.length;
+    onConfirmButtonClick(){
+      this.$emit("onConfirmButtonClick")
+    }
+  },
+  computed:{
+    /**
+     * 计算属性，实时计算用户的准确率
+     */
+    user_accuracy(){
+      let quizResultNum = this.user_result.length;
       let rightAnswerNum = 0;
+      if(!this.user_result)return 0;
       for (let i=0;i<quizResultNum;i++){
-        if(this.quizResult[i].answer === this.quizResult[i].user_answer){
+        if(this.user_result[i].answer === this.user_result[i].user_answers[this.username]){
           rightAnswerNum++;
         }
       }
-      this.accuracy = rightAnswerNum/quizResultNum;
+      if(quizResultNum===0)return 0;
+      return rightAnswerNum/quizResultNum;
+    },
+    /**
+     * 检测对手是否完成,
+     * 如果所有题目的答案的长度都是2，那么对手就完成了
+     */
+    other_user_complete(){
+      if(!this.userTimes)return false;
+      if(this.user_result.length<=0)return false;
+      for(let i=0;i<this.user_result.length;i++){
+        if (Object.keys(this.user_result[i].user_answers).length<2){
+          return false;
+        }
+      }
+      return true;
+    },
+    /**
+     * 计算属性，实时计算对手的准确率
+     */
+    other_user_accuracy(){
+      let quizResultNum = 0;
+      let rightAnswerNum = 0;
+      if(!this.user_result)return 0;
+      console.log(this.user_result);
+      for (let i=0;i<this.user_result.length;i++){
+        let usernames = Object.keys(this.user_result[i].user_answers);
+        // 如果没有其他用户
+        if(usernames.length < 2){
+          continue;
+        }
+        // 如果有其他用户,更新用户名，并计算准确率
+        for( let j=0;j<usernames.length;j++){
+          console.log(usernames[j])
+          if(usernames[j] !== this.username){
+            this.other_username = usernames[j];
+          }
+        }
+        quizResultNum++;
+        if(this.user_result[i].user_answers[this.other_username]===this.user_result[i].answer){
+          rightAnswerNum++;
+        }
+      }
+
+      if(quizResultNum===0)return 0;
+      return rightAnswerNum/quizResultNum;
+    },
+    /**
+     * 判断是否胜利
+     */
+    compare(){
+      if(this.user_accuracy!==0&&this.other_user_accuracy!==0){
+        if(this.user_accuracy>this.other_user_accuracy){
+          return "win";
+        }else if(this.user_accuracy<this.other_user_accuracy){
+          return "lose";
+        }else{
+          return "Tie";
+        }
+      }
+
+      return "unknown";
     }
-  },
-  mounted() {
-    // 计算准确率
-
-
-
   }
 }
+
 
 
 
@@ -117,46 +121,76 @@ export default {
 
 <template>
 <div class="result-container">
-  <div class="detail-view">
-    <ul>
-      <li class="detail-view-row">
-        <div>用户名</div>
-        <div>{{username}}</div>
-      </li>
-      <li class="detail-view-row">
-        <div>房间ID</div>
-        <div>{{roomID}}</div>
-      </li>
-      <li class="detail-view-row">
-        <div>答题时间</div>
-        <div>{{quizTime}}</div>
-      </li>
-      <li class="detail-view-row">
-        <div>准确率</div>
-        <div>{{accuracy}}</div>
-      </li>
-    </ul>
+  <div class="compare-view">
+    <div class="detail-view">
+      <h3>你的结果</h3>
+      <ul>
+        <li class="detail-view-row">
+          <div>用户名</div>
+          <div>{{username}}</div>
+        </li>
+        <li class="detail-view-row">
+          <div>房间ID</div>
+          <div>{{roomID}}</div>
+        </li>
+        <li class="detail-view-row">
+          <div>答题时间</div>
+          <div>{{userTimes[username]?userTimes[username]:"unknown"}}</div>
+        </li>
+        <li class="detail-view-row">
+          <div>准确率</div>
+          <div>{{user_accuracy}}</div>
+        </li>
+      </ul>
+    </div>
+    <div class="compare-tag">
+      <div v-if="compare==='win'">></div>
+      <div v-else-if="compare==='lose'"><</div>
+      <div v-else-if="compare==='Tie'">=</div>
+      <div v-else>?</div>
+    </div>
+    <div class="detail-view">
+      <h3>对手</h3>
+      <ul v-if="other_user_complete">
+        <li class="detail-view-row">
+          <div>用户名</div>
+          <div>{{other_username}}</div>
+        </li>
+        <li class="detail-view-row">
+          <div>房间ID</div>
+          <div>{{roomID}}</div>
+        </li>
+        <li class="detail-view-row">
+          <div>答题时间</div>
+          <div>{{userTimes[other_username]?userTimes[other_username]:"...等待中"}}</div>
+        </li>
+        <li class="detail-view-row">
+          <div>准确率</div>
+          <div>{{other_user_accuracy}}</div>
+        </li>
+      </ul>
+      <ul v-else>
+        <li class="detail-view-row">
+          <div>用户名</div>
+          <div>...等待中</div>
+        </li>
+        <li class="detail-view-row">
+          <div>房间ID</div>
+          <div>{{roomID}}</div>
+        </li>
+        <li class="detail-view-row">
+          <div>答题时间</div>
+          <div>...等待中</div>
+        </li>
+        <li class="detail-view-row">
+          <div>准确率</div>
+          <div>...等待中</div>
+        </li>
+      </ul>
+    </div>
   </div>
-  <div class="compare-tag"></div>
-  <div class="detail-view">
-    <ul>
-      <li class="detail-view-row">
-        <div>用户名</div>
-        <div>{{username}}</div>
-      </li>
-      <li class="detail-view-row">
-        <div>房间ID</div>
-        <div>{{roomID}}</div>
-      </li>
-      <li class="detail-view-row">
-        <div>答题时间</div>
-        <div>{{quizTime}}</div>
-      </li>
-      <li class="detail-view-row">
-        <div>准确率</div>
-        <div>{{accuracy}}</div>
-      </li>
-    </ul>
+  <div class="button-view">
+    <button type="button" @click="onConfirmButtonClick">确认OK</button>
   </div>
 </div>
 </template>
@@ -172,80 +206,60 @@ export default {
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     flex-direction: row;
+}
 
+.compare-view{
     display: grid;
     grid-template-columns: 1fr 0.1fr 1fr;
 }
+
+.detail-view{
+  background-color: rgba(220, 213, 213, 0.6);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-view h3{
+  text-align: center;
+}
+
 .detail-view ul{
   list-style: none;
   padding: 0 5%;
 }
 
 .detail-view-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10%;
+  line-height: 100%;
+  padding: 5% 0;
+}
+
+.compare-tag{
   display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-view{
+  display: flex;
+  padding-top: 5%;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-view button{
+  border: none;
+  border-radius: 10px;
+  padding: 2% 5%;
+  background-color: #efe3e3;
+}
+
+.button-view button:active{
+  background-color: white;
 }
 
 </style>
 
-/*[
-{
-question: "I have cities, but no houses. I have forests, but no trees. I have rivers, but no water. What am I?",
-options: ["A map", "A dream", "A movie", "A painting"],
-user_answer: "A map",
-answer: "A map"
-},
-
-{
-question: "The more you take, the more you leave behind. What am I?",
-options: ["Time", "Footsteps", "Memory", "Holes"],
-answer: "Footsteps"
-},
-
-{
-question: "What comes once in a minute, twice in a moment, but never in a thousand years?",
-options: ["The letter 'M'", "A star", "An eclipse", "A century"],
-answer: "The letter 'M'"
-},
-
-{
-question: "What has keys but can't open locks?",
-options: ["A piano", "A map", "A computer", "A treasure chest"],
-answer: "A piano"
-},
-
-{
-question: "If two’s company and three’s a crowd, what are four and five?",
-options: ["A party", "Nine", "A team", "A band"],
-answer: "Nine"
-},
-
-{
-question: "What is so fragile that saying its name breaks it?",
-options: ["Silence", "Glass", "Love", "Trust"],
-answer: "Silence"
-},
-
-{
-question: "What is always in front of you but can’t be seen?",
-options: ["The future", "Air", "Time", "A mirror"],
-answer: "The future"
-},
-
-{
-question: "I am not alive, but I grow; I don’t have lungs, but I need air; I don’t have a mouth, but water kills me. What am I?",
-options: ["Fire", "Clouds", "A plant", "A shadow"],
-answer: "Fire"
-},
-
-{
-question: "What can travel around the world while staying in the corner?",
-options: ["A stamp", "A clock", "A letter", "A satellite"],
-answer: "A stamp"
-},
-
-{
-question: "What has a head, a tail, but no body?",
-options: ["A coin", "A snake", "A shadow", "A comet"],
-answer: "A coin"
-}
-];*/

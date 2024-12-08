@@ -39,8 +39,8 @@
     },
     watch: {
       gameStarted(newValue) {
-        this.$emit('game-started', newValue);
         this.$emit('roomID', this.RoomId);
+        this.$emit('game-started', newValue);
       },
     },
     props: {
