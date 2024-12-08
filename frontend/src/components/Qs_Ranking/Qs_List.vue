@@ -7,7 +7,7 @@
         stripe
         border
         class="custom-table"
-        height="750"
+        height="700"
         weight="80%"
         :cell-style="{ textAlign: 'center' }"
         :header-cell-style="{ textAlign: 'center' }"
