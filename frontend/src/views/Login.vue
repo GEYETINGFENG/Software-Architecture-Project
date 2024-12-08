@@ -130,10 +130,10 @@ export default {
     // 处理登录
     async handleSignIn() {
       if (!this.username || !this.password) {
-        this.error = 'Please enter both UID and Password.';
+        this.error = 'Please enter both Username and Password.';
         return;
       }
-      console.log('Submitting form with uid:', this.uid);
+      console.log('Submitting form with username:', this.username);
       console.log('Submitting form with password:', this.password);
 
       try {

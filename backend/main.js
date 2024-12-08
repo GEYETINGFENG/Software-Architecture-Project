@@ -60,7 +60,6 @@ router.post('/api/users/login', async (ctx) => {
       if (foundUser) {
           console.log(`User found: ${foundUser.username}`);
           console.log(`Stored encrypted password: ${foundUser.password}`);
-
           if (foundUser.password === password) {
               console.log('Password match, login successful.');
               const token = jwt.sign({ username: foundUser.username }, secretKey, { expiresIn: '24h' });
@@ -117,6 +116,32 @@ app.use(
     secret: secretKey
   }).unless({ path:[/^\/api\/users\/login/, /^\/api\/users\/register/] })
 );
+
+
+router.get('/api/userinfo', async (ctx) => {
+  try {
+    const username=ctx.state.user.username;//从token中获取username
+    if (!username) {
+      ctx.status = 401;
+      ctx.body = { message: 'Token does not contain username' };
+      return;
+    }
+    // 查询用户信息
+    const user = await User.findOne({ username });
+    if (!user) {
+      ctx.status = 404;
+      ctx.body = { message: 'User not found' };
+    } else {
+      ctx.status = 200;
+      ctx.body = { user }; // 返回用户信息
+    }
+  } catch (error) {
+    console.error('Error verifying token or fetching user:', error);
+    ctx.status = 500;
+    ctx.body = { message: 'Internal server error' };
+  }
+});
+
 
 // 查询接口
 router.get('/qsRanking', async (ctx) => {

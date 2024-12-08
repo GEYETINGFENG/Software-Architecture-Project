@@ -1,4 +1,4 @@
-import {Server as SocketIO} from 'socket.io';
+import { Server as SocketIO } from 'socket.io';
 import http from 'http';
 
 const PORT = 3001; // Socket.IO 服务器的端口
@@ -18,13 +18,12 @@ io.on('connection', (socket) => {
 //监听每个新客户端的连接事件，当有客户端成功连接到服务器时执行此回调
 //每个连接的客户端都会分配一个唯一的socket对象，用于和该客户端进行通信
   // 创建房间
-  socket.on('createRoom', (roomId) => {
+  socket.on('createRoom', (username, roomId) => {
     //监听客户端发送的createRoom事件，当客户端请求创建一个房间时执行该回调
     if (!rooms[roomId]) {// 如果房间不存在
-      rooms[roomId] = {players: [], questions: [], answers: {}, readyCount: 0, timer: null};
-      //初始化房间信息:房间内玩家ID列表，问题数据，玩家答案，玩家数量，倒计时
+      rooms[roomId] = {players: [], questions: [], readyCount:0, timer: null};
+      rooms[roomId].players.push({ username: username, correctAnswers: 0 });
       socket.join(roomId);
-      console.log(`Room ${roomId} created`);
       socket.emit('roomCreated', roomId);
     } else {
       socket.emit('error', 'Room already exists');
@@ -32,12 +31,15 @@ io.on('connection', (socket) => {
   });
 
   // 加入房间
-  socket.on('joinRoom', (roomId) => {
+  socket.on('joinRoom', (username, roomId) => {
     if (rooms[roomId]) {
-      rooms[roomId].players.push(socket.id);//player是存储房间内玩家ID的数组
-      socket.join(roomId); //将客户端加入房间
-      console.log(`Player ${socket.id} joined room ${roomId}`);
-      io.to(roomId).emit('playerJoined', roomId);
+      if (rooms[roomId].players.length < 2) {
+        rooms[roomId].players.push({ username: username, correctAnswers: 0 });
+        socket.join(roomId); // 将客户端加入房间
+        io.to(roomId).emit('playerJoined', roomId);
+      } else {
+        socket.emit('error', 'Room is full');
+      }
     } else {
       socket.emit('error', 'Room does not exist');
     }
@@ -50,11 +52,12 @@ io.on('connection', (socket) => {
 
       if (rooms[roomId].readyCount === 2) {
         io.to(roomId).emit('gameStarted');
-        rooms[roomId].readyCount = 0; // 重置准备计数
-      }
+        rooms[roomId].readyCount = 0;
+
     } else {
       socket.emit('error', 'Room does not exist');
     }
+  }
   });
 
   socket.on('getQuestions',  async (roomId) => {
@@ -65,9 +68,18 @@ io.on('connection', (socket) => {
 
 
   // 提交答案
-  socket.on('submitAnswer', (roomId, answer) => {
-    rooms[roomId].answers[socket.id] = answer;
-    io.to(roomId).emit('answerSubmitted', {playerId: socket.id, answer});
+  socket.on('submitAnswer', (roomId, username, question_index, answer_index) => {
+    const question = rooms[roomId].questions[question_index];
+    const player = rooms[roomId].players.find(player => player.username === username);
+
+    if (question.answer === question.options[answer_index]) {
+      if (player) {
+        player.correctAnswers += 1;
+      }
+    }
+    if (question_index + 1 ===rooms[roomId].questions.length) {
+      io.emit("AllQuestionCompleted", username, player.correctAnswers)
+    }
   });
 
   socket.on('disconnect', () => {

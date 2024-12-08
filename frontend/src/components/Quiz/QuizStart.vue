@@ -74,6 +74,12 @@
       },
 
     },
+    props: {
+      username: {
+        type: String,
+        required: true,
+      },
+    },
     mounted() {
       this.socket = io('http://localhost:3001');
   
@@ -92,51 +98,33 @@
         this.gameStarted = true;
       });
   
-      // this.socket.on('OpponentMatch', () => {
-      //   this.isOpponentMatch = true;
-      // });
-  
-      // this.socket.on('timer', (time) => {
-      //   this.timer = time;
-      // });
-      //
-      // this.socket.on('timeUp', () => {
-      //   this.errorMessage = '时间到！游戏结束！';
-      //   this.gameStarted = false;
-      //   this.timer = 0;
-      // });
-      //
-      // this.socket.on('answerSubmitted', ({ playerId, answer }) => {
-      //   console.log(`Player ${playerId} submitted answer: ${answer}`);
-      // });
-  
       this.socket.on('error', (message) => {
         this.errorMessage = message;
       });
     },
-
     methods: {
+      validateRoomId(roomId) {
+        const regex = /^[1-9]\d{2}$/;
+        return regex.test(roomId);
+      },
       createRoom() {
-        this.socket.emit('createRoom', this.tempRoomId);
+        if (this.validateRoomId(this.tempRoomId)) {
+          this.socket.emit('createRoom', this.username, this.tempRoomId);
+        } else {
+          this.errorMessage = 'Room ID must be a three-digit positive integer';
+        }
       },
       joinRoom() {
-        this.socket.emit('joinRoom', this.tempRoomId);
+        if (this.validateRoomId(this.tempRoomId)) {
+          this.socket.emit('joinRoom', this.username, this.tempRoomId);
+        } else {
+          this.errorMessage = 'Room ID must be a three-digit positive integer';
+        }
       },
       startGame() {
         this.socket.emit('startGame', this.RoomId);
         this.getReady = true;
       },
-      // submitAllAnswers() {
-      //   const correctAnswers = this.questions.map(q => q.answer);
-      //   this.correctAnswersCount = this.answers.reduce((count, answer, index) => {
-      //     return answer === correctAnswers[index] ? count + 1 : count;
-      //   }, 0);
-      //   const endTime = new Date();
-      //   this.completionTime = ((endTime - this.startTime) / 1000).toFixed(2);
-      //   this.completed = true;
-      //   this.gameStarted = false;
-      //   this.socket.emit('submitAnswer', this.currentRoomId, this.answers);
-      // },
     },
   };
   </script>
