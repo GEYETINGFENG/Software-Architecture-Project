@@ -10,11 +10,11 @@
             <div class="operate-view" v-if="detailOpen">
               <button type="button" @click.stop="clickLike" class="like_img"  >
                 <img src="../../assets/img/like.svg" alt="3213213">
-                {{iconNum}}
+                {{blogs[index].likes}}
               </button>
-              <button type="button" @click.stop="clickComment"><Comment/>{{commentNum}}</button>
-              <button type="button" @click.stop="clickStar"><Star/>{{starNum}}</button>
-              <button type="button" @click.stop="clickDelete"><Delete/>{{deleteNum}}</button>
+              <button type="button" @click.stop="clickComment"><Comment/>{{blogs[index].comments.length}}</button>
+              <button type="button" @click.stop="clickStar"><Star/>{{blogs[index].favorites}}</button>
+              <button type="button" @click.stop="clickDelete"><Delete/></button>
             </div>
 
           </div>
@@ -24,10 +24,11 @@
     </div>
     <div v-if="commentOpen" class="comment-list">
       <ul>
-        <li v-for="(index) in blogs[currentIndex].comments.length" :key="index">
-          <p>{{this.blogs[currentIndex].comments[index-1]}}</p>
+        <li v-for="(comment, index) in blogs[currentIndex].comments" :key="index">
+          <p>{{ comment }}</p>
           <div class="comment-operate-view">
-            <button type="button"><Delete/>删除</button>
+            <!-- 点击删除时传递 comment 内容 -->
+            <button type="button" @click="deleteComment(comment)">删除</button>
           </div>
         </li>
       </ul>
@@ -51,7 +52,6 @@ export default {
       iconNum:0,
       commentNum:0,
       starNum:0,
-      deleteNum:0
     };
   },
   methods: {
@@ -72,11 +72,42 @@ export default {
         // 如果请求成功，将文章数据更新到 blogs
         if (response.status === 200) {
           this.blogs = response.data.articles;
-          console.log('这个是blog的内容');
-          console.log(this.blogs[4].comments[0]);
+          // console.log("文章的内容是"+this.blogs)
+          // console.log("文章的点赞数是"+this.blogs.likes)
+          // console.log("文章的收藏数是"+this.blogs.favorites)
         }
       } catch (error) {
         console.error('Error fetching articles:', error);
+      }
+    },
+    // 删除评论
+    async deleteComment(commentContent) {
+      const articleTitle = this.blogs[this.currentIndex].title;
+      try {
+        const token = localStorage.getItem('jwt-token');
+        if (!token) {
+          console.error('No token found');
+          return;
+        }
+
+        // 发送 DELETE 请求
+        const response = await axios.delete(
+          `http://localhost:3000/api/article/${articleTitle}/comment`,
+          {
+            data: { commentContent: commentContent }, 
+            headers: { Authorization: `Bearer ${token}` }  
+          }
+        );
+        // 删除成功后，更新本地的评论数据
+        if (response.status === 200) {
+          const index = this.blogs[this.currentIndex].comments.indexOf(commentContent);
+          if (index !== -1) {
+            this.blogs[this.currentIndex].comments.splice(index, 1);
+          }
+          console.log('Comment deleted successfully');
+        }
+      } catch (error) {
+        console.error('Error deleting comment:', error);
       }
     },
     nextBlog() {
@@ -123,7 +154,39 @@ export default {
     },
     clickLike(){},
     clickStar(){},
-    clickDelete(){}
+    async clickDelete() {
+  const articleTitle = this.blogs[this.currentIndex].title; // 获取当前选中博客的标题
+  console.log('当前要删除的文章标题是: ' + articleTitle);
+
+  try {
+    const token = localStorage.getItem('jwt-token');
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+
+    // 发送 DELETE 请求到后端删除文章
+    const response = await axios.delete(
+      `http://localhost:3000/api/article/${articleTitle}`, 
+      {
+        headers: { Authorization: `Bearer ${token}` }  // 将 token 添加到请求头
+      }
+    );
+
+    // 如果删除成功，移除本地的文章数据
+    if (response.status === 200) {
+      const index = this.blogs.findIndex(blog => blog.title === articleTitle);
+      if (index !== -1) {
+        this.blogs.splice(index, 1);  // 删除本地数据中的文章
+      }
+      console.log('Article deleted successfully');
+      alert('Article deleted successfully');
+    }
+  } catch (error) {
+    console.error('Error deleting article:', error);
+    alert('Error deleting article');
+  }
+}
   },
   mounted() {
     this.fetchUserArticles();

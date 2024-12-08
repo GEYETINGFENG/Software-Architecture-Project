@@ -6,10 +6,10 @@ export default {
 <template>
   <div class="collection-record">
     <div class="record-content">
-      <div v-for="item in collectionList" :key="item.id" class="collection-item">
+      <div v-for="item in user.favoriteTitles" :key="item.id" class="collection-item">
         <div class="collection-item-content">
-          <p>{{ item.title }}</p>
-          <span class="star" :class="{ active: item.isStarred }" @click="toggleStar(item)">
+          <p>{{ item }}</p>
+          <span class="star" :class="{ active: true }">
             <Star v-if="item.isStarred"/>
             <StarFilled v-else/>
           </span>
@@ -21,11 +21,21 @@ export default {
 
 <script>
 import {Star, StarFilled} from "@element-plus/icons-vue";
+import axios from 'axios';
 
 export default {
   components: {StarFilled, Star},
   data() {
     return {
+      user: { // 初始化一个空的 user 对象
+        username: '',
+        personal_intro: '',
+        blogs: [],
+        totalLikes: 0,
+        battlesParticipated: 0,
+        favoriteTitles: [],
+        likedTitles: []
+      },
       collectionList: [
         { id: 1, title: 'Mastering Study Skills: Tips for Efficient Learning', isStarred: true },
         { id: 2, title: 'Language Learning Made Easy: A 5-Step Guide to Get Started', isStarred: false },
@@ -37,7 +47,26 @@ export default {
       activeTab: 'collection'
     };
   },
+  mounted() {
+    this.fetchUserData();
+  },
   methods: {
+    async fetchUserData() {
+      try {
+        const token = localStorage.getItem('jwt-token'); // 从本地存储获取 JWT
+        if (!token) {
+          console.error('No JWT token found in localStorage');
+          return;
+        }
+        const response = await axios.get('http://localhost:3000/api/userinfo', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        this.user=response.data.user
+        console.log(this.user.favoriteTitles)
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+      },
     i() {
       return i
     },
