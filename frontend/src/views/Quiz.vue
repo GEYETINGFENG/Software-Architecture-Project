@@ -1,10 +1,13 @@
 <template>
   <div class="app-container">
-    <!-- 引入Topbar组件 -->
+    <video autoplay muted loop class="video-background">
+      <source src="../assets/img/Battel%20background.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
     <Topbar />
-
-    <!-- 引入QuizContent组件 -->
-    <QuizContent />
+    <QuizStart @game-started="startGame" @roomID="getRoomID" v-if="!gameStarted" :username="username"/>
+    <QuizAnswering v-if="gameStarted && !gameCompleted" :roomID="roomID" @game-completed="getGameCompleted" :username="username" @correctAnswer="getCorrectAnswers"/>
+    <QuizResult v-if="gameCompleted" :username="username"/>
   </div>
 </template>
 
@@ -12,13 +15,63 @@
 
 <script>
 import Topbar from '../components/Topbar.vue';
-import QuizContent from '../components/QuizContent.vue';
+import QuizStart from '../components/Quiz/QuizStart.vue';
+import QuizAnswering from '../components/Quiz/QuizAnswering.vue';
+import QuizResult from '../components/Quiz/QuizResult.vue';
+
+import axios from 'axios';
 
 export default {
   components: {
     Topbar,
-    QuizContent
+    QuizAnswering,
+    QuizStart,
+    QuizResult
+  },
+  data() {
+    return {
+      gameStarted: false,
+      gameCompleted: false,
+      roomID: '',
+      username: null,
+      correctAnswers: 0,
+    };
+  },
+  methods: {
+    startGame(newValue) {
+      this.gameStarted = newValue;
+    },
+    getRoomID(roomID) {
+      this.roomID = roomID;
+    },
+    getGameCompleted(newValue) {
+      console.log('Game completed: Parent', newValue);
+      this.gameCompleted = newValue;
+    },
+    getCorrectAnswers(newValue) {
+      console.log('Game completed: Parent', newValue);
+      this.correctAnswers = newValue;
+    },
+    async fetchUserData() {
+      try {
+        const token = localStorage.getItem('jwt-token'); // 从本地存储获取 JWT
+        if (!token) {
+          console.error('No JWT token found in localStorage');
+          return;
+        }
+        const response = await axios.get('http://localhost:3000/api/userinfo', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        this.username=response.data.user.username
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+    },
+  },
+  mounted() {
+    this.fetchUserData();
   }
+
 };
 </script>
 
@@ -29,4 +82,19 @@ export default {
   flex-direction: column; /* 纵向布局，Topbar在上，QuizContent在下 */
   min-height: 100vh; /* 让容器的最小高度为视口高度，确保布局填满页面 */
 }
+
+.video-background {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  opacity: 0.5;
+  z-index: -100;
+  background-size: cover;
+  overflow: hidden;
+}
+
 </style>
