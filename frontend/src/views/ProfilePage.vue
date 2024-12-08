@@ -9,9 +9,12 @@
       <!-- 头部信息，分为左右两个容器 -->
       <!-- 左侧容器：头像和基本信息 -->
       <div class="left-container">
-        <div>
           <div class="avatar">头像</div>
-        </div>
+          <div class="profile-info">
+            <p>用户名：Test User</p>
+            <p>邮箱：xxxxxx@163.com</p>
+            <p>简介：我是一名技术爱好者，欢迎来到我的博客网站</p>
+          </div>
       </div>
       <!-- 右侧容器：统计数据 -->
         <div class="right-container info-list-row">
