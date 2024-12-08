@@ -13,16 +13,44 @@
       placeholder="Please input content"
       class="inputbox"
     />
-    <el-button type="primary" @click="submitPost" id="submitbutton">POST</el-button>
+    <el-button type="primary" @click="publishBlog()" id="submitbutton">POST</el-button>
   </div>
 </template>
 
-<script setup>
+<script>
 import axios from 'axios';
-import { ref } from 'vue';
+export default {
+  data() {
+    return {
+      title: "",
+      content: ""
+    };
+  },
 
-const title = ref('');
-const content = ref('');
+  methods: {
+    async publishBlog() {
+      const token = localStorage.getItem('jwt-token'); // 从本地存储获取 JWT
+      console.log(token);
+      
+      // 发送 POST 请求
+      try {
+        const response = await axios.post(
+          'http://localhost:3000/api/blog/publish',
+          { title: this.title, content:this.content },
+          { headers: { Authorization: `Bearer ${token}` } } // 使用 Bearer token 认证
+        );
+        console.log(response.data);
+        alert('文章发布成功');
+      } catch (error) {
+        console.error(error.response.data);
+        alert(error.response.data.message || '发布失败');
+      }
+    },
+  },
+
+}
+
+
 
 // 发布帖子逻辑
 
