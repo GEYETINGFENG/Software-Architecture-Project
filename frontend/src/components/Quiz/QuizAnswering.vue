@@ -1,9 +1,9 @@
 <template>
   <div class="quiz-container">
     <div class="quiz-content">
-      <div v-if="puzzle">
-        <h5>{{ question_index + 1 }} / {{ puzzle.length }}</h5>
-        <h2 v-if="puzzle">{{ question_index < 9 ? puzzle[question_index].question : '' }}</h2>
+      <div v-if="puzzle" class="puzzle-body">
+        <h4>{{ question_index + 1 }} / {{ puzzle.length }}</h4>
+        <h2 v-if="puzzle">{{ question_index <= 9 ? puzzle[question_index].question : '' }}</h2>
       </div>
       <h4 v-else>Loading...</h4>
     </div>
@@ -17,7 +17,7 @@
           <button @click="this.answer_index = 3" :class="{'active': answer_index === 3}">{{ puzzle[question_index].options[3] }}</button>
         </div>
         <div class="questionManagement">
-          <button @click="submitAnswer">{{ this.question_index < 9 ? 'Next' : 'Check Result' }}</button>
+          <el-button type="success" @click="submitAnswer" class="admitButton">{{ this.question_index < 9 ? 'Next' : 'Check Result' }}</el-button>
         </div>
       </div>
       <div v-else>
@@ -110,8 +110,21 @@ export default {
 </script>
 
 <style scoped>
+.puzzle-body h2{
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+.puzzle-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .quiz-container {
-  max-width: 800px;
+  min-width: 1000px;
+  max-width: 1000px;
   margin: 200px auto;
   padding: 20px;
   font-family: Arial, sans-serif;
@@ -119,6 +132,18 @@ export default {
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   flex-direction: row;
+}
+
+.answer_button_group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.questionManagement {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .answer_button_group button {
@@ -130,10 +155,23 @@ export default {
   cursor: pointer;
 }
 
+.admitButton{
+  margin: 0 5px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 20%;
+}
+
 .answer_button_group button.active {
   background-color: #007BFF;
   color: white;
   border-color: #007BFF;
 }
 
+.timer {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
 </style>

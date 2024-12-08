@@ -120,82 +120,91 @@ export default {
 </script>
 
 <template>
-<div class="result-container">
-  <div class="compare-view">
-    <div class="detail-view">
-      <h3>你的结果</h3>
-      <ul>
-        <li class="detail-view-row">
-          <div>用户名</div>
-          <div>{{username}}</div>
-        </li>
-        <li class="detail-view-row">
-          <div>房间ID</div>
-          <div>{{roomID}}</div>
-        </li>
-        <li class="detail-view-row">
-          <div>答题时间</div>
-          <div>{{userTimes[username]?userTimes[username]:"unknown"}}</div>
-        </li>
-        <li class="detail-view-row">
-          <div>准确率</div>
-          <div>{{user_accuracy}}</div>
-        </li>
-      </ul>
-    </div>
-    <div class="compare-tag">
-      <div v-if="compare==='win'">></div>
-      <div v-else-if="compare==='lose'"><</div>
-      <div v-else-if="compare==='Tie'">=</div>
-      <div v-else>?</div>
-    </div>
-    <div class="detail-view">
-      <h3>对手</h3>
-      <ul v-if="other_user_complete">
-        <li class="detail-view-row">
-          <div>用户名</div>
-          <div>{{other_username}}</div>
-        </li>
-        <li class="detail-view-row">
-          <div>房间ID</div>
-          <div>{{roomID}}</div>
-        </li>
-        <li class="detail-view-row">
-          <div>答题时间</div>
-          <div>{{userTimes[other_username]?userTimes[other_username]:"...等待中"}}</div>
-        </li>
-        <li class="detail-view-row">
-          <div>准确率</div>
-          <div>{{other_user_accuracy}}</div>
-        </li>
-      </ul>
-      <ul v-else>
-        <li class="detail-view-row">
-          <div>用户名</div>
-          <div>...等待中</div>
-        </li>
-        <li class="detail-view-row">
-          <div>房间ID</div>
-          <div>{{roomID}}</div>
-        </li>
-        <li class="detail-view-row">
-          <div>答题时间</div>
-          <div>...等待中</div>
-        </li>
-        <li class="detail-view-row">
-          <div>准确率</div>
-          <div>...等待中</div>
-        </li>
-      </ul>
+  <div class="basic-container">
+    <div class="result-container">
+      <div class="compare-view">
+        <div class="detail-view">
+          <h3>Your Result</h3>
+          <ul>
+            <li class="detail-view-row">
+              <div>Username</div>
+              <div>{{username}}</div>
+            </li>
+            <li class="detail-view-row">
+              <div>Room ID</div>
+              <div>{{roomID}}</div>
+            </li>
+            <li class="detail-view-row">
+              <div>Time Cost</div>
+              <div>{{userTimes[username]?userTimes[username]:"unknown"}}</div>
+            </li>
+            <li class="detail-view-row">
+              <div>Accuracy</div>
+              <div>{{user_accuracy}}</div>
+            </li>
+          </ul>
+        </div>
+        <div class="compare-tag">
+          <div v-if="compare==='win'">></div>
+          <div v-else-if="compare==='lose'"><</div>
+          <div v-else-if="compare==='Tie'">=</div>
+          <div v-else>?</div>
+        </div>
+        <div class="detail-view">
+          <h3>Rival</h3>
+          <ul v-if="other_user_complete">
+            <li class="detail-view-row">
+              <div>Username</div>
+              <div>{{other_username}}</div>
+            </li>
+            <li class="detail-view-row">
+              <div>Room ID</div>
+              <div>{{roomID}}</div>
+            </li>
+            <li class="detail-view-row">
+              <div>Time Cost</div>
+              <div>{{userTimes[other_username]?userTimes[other_username]:"...等待中"}}</div>
+            </li>
+            <li class="detail-view-row">
+              <div>Accuracy</div>
+              <div>{{other_user_accuracy}}</div>
+            </li>
+          </ul>
+          <ul v-else>
+            <li class="detail-view-row">
+              <div>Username</div>
+              <div>...Waiting</div>
+            </li>
+            <li class="detail-view-row">
+              <div>Room ID</div>
+              <div>{{roomID}}</div>
+            </li>
+            <li class="detail-view-row">
+              <div>Time Cost</div>
+              <div>...Waiting</div>
+            </li>
+            <li class="detail-view-row">
+              <div>Accuracy</div>
+              <div>...Waiting</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="button-view">
+        <button type="button" @click="onConfirmButtonClick">OK</button>
+      </div>
     </div>
   </div>
-  <div class="button-view">
-    <button type="button" @click="onConfirmButtonClick">确认OK</button>
-  </div>
-</div>
 </template>
 
 <style scoped>
+.basic-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
 .result-container{
     max-width: 800px;
     min-width: 400px;
@@ -206,6 +215,9 @@ export default {
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 160px;
 }
 
 .compare-view{

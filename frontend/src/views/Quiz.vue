@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+
     <video autoplay muted loop class="video-background">
       <source src="../assets/img/Battel%20background.mp4" type="video/mp4">
       Your browser does not support the video tag.
