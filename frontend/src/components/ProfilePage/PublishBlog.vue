@@ -18,6 +18,7 @@
 <script>
 import Vditor from 'vditor';
 import "vditor/dist/index.css";
+import axios from 'axios';
 
 export default {
   name: "PostBlog",
@@ -28,10 +29,24 @@ export default {
   },
 
   methods: {
-    publishBlog(){
-      console.log(this.title_input)
-      console.log(this.contentEditor.getValue())
-    }
+    async publishBlog() {
+      const token = localStorage.getItem('jwt-token'); // 从本地存储获取 JWT
+      const content = this.contentEditor.getValue(); // 获取 Vditor 编辑器内容
+
+      // 发送 POST 请求
+      try {
+        const response = await axios.post(
+          'http://localhost:3000/api/blog/publish',
+          { title: this.title_input, content },
+          { headers: { Authorization: `Bearer ${token}` } } // 使用 Bearer token 认证
+        );
+        console.log(response.data);
+        alert('文章发布成功');
+      } catch (error) {
+        console.error(error.response.data);
+        alert(error.response.data.message || '发布失败');
+      }
+    },
   },
 
   mounted() {
