@@ -11,24 +11,24 @@
           头像
         </div>
         <div class="profile-info info-list-row">
-          <p>用户名：{{ user.username }}</p>
-          <p>邮箱：{{ user.email }}</p>
-          <p>简介：{{ user.personal_intro }}</p>
+          <p>Username：{{ user.username }}</p>
+          <p>Email：{{ user.email }}</p>
+          <p>Introduction：{{ user.personal_intro }}</p>
         </div>
       </div>
       <div class="right-container info-list-row">
-        <p>发布博客量：{{ user.blogs.length }}</p>
-        <p>获赞量：{{ user.totalLikes }}</p>
-        <p>对战次数：{{ user.battlesParticipated }}</p>
+        <p>Number of blogs published：{{ user.blogs.length }}</p>
+        <p>Number of likes：{{ user.totalLikes }}</p>
+        <p>Number of battles：{{ user.battlesParticipated }}</p>
       </div>
     </div>
       <div class="body-container">
         <!-- 中间选项卡 -->
         <div class="tabs-container">
-          <button type="button" @click="setTab('myBlogs')" :class="activeTab==='myBlogs'?'activate-tab':''">我的博客</button>
-          <button type="button" @click="setTab('publishBlog')" :class="activeTab==='publishBlog'?'activate-tab':''">发布博客</button>
-          <button type="button" @click="setTab('likeRecords')" :class="activeTab==='likeRecords'?'activate-tab':''">点赞记录</button>
-          <button type="button" @click="setTab('favorites')" :class="activeTab==='favorites'?'activate-tab':''">收藏记录</button>
+          <button type="button" @click="setTab('myBlogs')" :class="activeTab==='myBlogs'?'activate-tab':''">My Blogs</button>
+          <button type="button" @click="setTab('publishBlog')" :class="activeTab==='publishBlog'?'activate-tab':''">Publish Blog</button>
+          <button type="button" @click="setTab('likeRecords')" :class="activeTab==='likeRecords'?'activate-tab':''">Like History</button>
+          <button type="button" @click="setTab('favorites')" :class="activeTab==='favorites'?'activate-tab':''">Favorite History</button>
         </div>
         <!-- 内容展示 -->
         <div class="content">
@@ -100,12 +100,17 @@ export default {
 </script>
 
 <style scoped>
+
+.content{
+  width: auto;
+}
+
 .body-block {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-  width: 1200px;
+  width: 100%;
 }
 .container{
   display: flex;
@@ -201,6 +206,7 @@ export default {
   display: flex;
   flex-direction: column;
   text-align: center;
+  width: 80%;
 }
 
 .tabs-container {

@@ -3,14 +3,14 @@
     <div class="input-container">
       <el-input
         v-model="title_input"
-        style="width: 75%;"
-        placeholder="输入博客标题"
+        style="width: 100%;"
+        placeholder="Enter blog title"
         clearable
       />
     </div>
     <div id="vditor"></div>
     <div class="button-view">
-      <button type="button" @click="publishBlog">发布</button>
+      <button type="button" @click="publishBlog">Publish</button>
     </div>
   </div>
 </template>
@@ -41,10 +41,10 @@ export default {
           { headers: { Authorization: `Bearer ${token}` } } // 使用 Bearer token 认证
         );
         console.log(response.data);
-        alert('文章发布成功');
+        alert('Article published successfully');
       } catch (error) {
         console.error(error.response.data);
-        alert(error.response.data.message || '发布失败');
+        alert(error.response.data.message || 'Publication failed');
       }
     },
   },
@@ -85,6 +85,7 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  width: 100%;
 }
 
 .button-view{
