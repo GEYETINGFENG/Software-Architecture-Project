@@ -1,5 +1,5 @@
 <template>
-    <Topbar/>
+    <Topbar class="Navbar"/>
     <div class="main-page">
     <!-- Hero Section -->
     <section class="hero">

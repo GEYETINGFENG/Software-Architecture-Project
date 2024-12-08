@@ -4,7 +4,7 @@
       <source src="../assets/img/204006-923133925_tiny.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    <Topbar/>
+    <Topbar class="Topbar"/>
     <div id="profile">
       <!-- 头部信息，分为左右两个容器 -->
       <!-- 左侧容器：头像和基本信息 -->
@@ -224,6 +224,10 @@ export default {
   overflow: hidden;
 }
 
+.Topbar {
+  position: fixed;
+  height: 50px;
+}
 </style>
 
 

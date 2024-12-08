@@ -4,7 +4,7 @@
     text-align: center;
     background-color: #f9f9f9;
     color: #333;
-    padding: 20px;
+    padding: 5%;
     min-height: 90vh;
     display: flex;
     flex-direction: column;
@@ -74,4 +74,8 @@
     color: white;
     padding: 10px 20px;
     margin-top: auto;
+    }
+
+    .Navbar{
+      position: fixed;
     }
