@@ -5,13 +5,12 @@
       Your browser does not support the video tag.
     </video>
     <Topbar />
-    <QuizStart @game-started="startGame" @roomID="getRoomID" v-if="!gameStarted" :username="username"/>
-    <QuizAnswering v-if="gameStarted && !gameCompleted" :roomID="roomID" @game-completed="getGameCompleted" :username="username" @correctAnswer="getCorrectAnswers"/>
-    <QuizResult v-if="gameCompleted" :username="username"/>
+    <QuizStart :socket="socket" @game-started="startGame" @roomID="getRoomID" v-if="!gameStarted" :username="username"/>
+    <QuizAnswering v-if="gameStarted && !gameCompleted" :socket="socket" :roomID="roomID" @game-completed="getGameCompleted" :username="username" @correctAnswer="getCorrectAnswers"/>
+    <QuizResult v-if="gameCompleted" :socket="socket" :username="username"/>
+
   </div>
 </template>
-
-
 
 <script>
 import Topbar from '../components/Topbar.vue';
@@ -19,6 +18,7 @@ import QuizStart from '../components/Quiz/QuizStart.vue';
 import QuizAnswering from '../components/Quiz/QuizAnswering.vue';
 import QuizResult from '../components/Quiz/QuizResult.vue';
 
+import { io } from 'socket.io-client';
 import axios from 'axios';
 
 export default {
@@ -31,10 +31,11 @@ export default {
   data() {
     return {
       gameStarted: false,
-      gameCompleted: false,
+      gameCompleted: true,
       roomID: '',
       username: null,
       correctAnswers: 0,
+      socket: null
     };
   },
   methods: {
@@ -70,8 +71,11 @@ export default {
   },
   mounted() {
     this.fetchUserData();
+  },
+  beforeMount() {
+    this.socket = io('http://localhost:3001');
+    console.log(this.socket);
   }
-
 };
 </script>
 

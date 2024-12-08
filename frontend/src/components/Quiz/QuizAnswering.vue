@@ -39,7 +39,6 @@ export default {
     },
   data() {
     return {
-      socket: null,
       puzzle: null,
       question_index: 0,
       answer_index: 0,
@@ -56,6 +55,9 @@ export default {
       type: String,
       required: true,
     },
+    socket:{
+      required: true
+    }
   },
   watch: {
     completed(newValue) {
@@ -68,8 +70,6 @@ export default {
     }
   },
   mounted() {
-    this.socket = io('http://localhost:3001');
-
 
     this.socket.emit('getQuestions', this.roomID);
 

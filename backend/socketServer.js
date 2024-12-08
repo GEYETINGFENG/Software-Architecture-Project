@@ -6,7 +6,7 @@ const PORT = 3001; // Socket.IO 服务器的端口
 const server = http.createServer();
 const io = new SocketIO(server, {
   cors: {
-    origin: "http://localhost:5173", // 前端的地址
+    origin: ["http://localhost:5173","http://10.252.145.181:5173"], // 前端的地址
     methods: ["GET", "POST"]
   }
 });
@@ -71,9 +71,12 @@ io.on('connection', (socket) => {
   socket.on('submitAnswer', (roomId, username, question_index, answer_index) => {
     const question = rooms[roomId].questions[question_index];
     const player = rooms[roomId].players.find(player => player.username === username);
+    // 向question对象添加一个user_answer属性，用于保存用户的答案
+    question.user_answer = question.options[answer_index];
 
     if (question.answer === question.options[answer_index]) {
       if (player) {
+        question.correct = true;
         player.correctAnswers += 1;
       }
     }
