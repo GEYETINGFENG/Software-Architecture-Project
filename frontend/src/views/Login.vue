@@ -172,6 +172,7 @@ export default {
           console.log(response.data)
           if (response.data.status === 0) {
             console.log('Registration successful!');
+            alert('Registration successful!');
           } else {
             console.error('Registration failed:', response.data.msg);
           }

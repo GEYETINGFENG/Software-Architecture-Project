@@ -24,10 +24,9 @@
     </div>
     <div class="comment-list" v-if="commentOpen">
       <ul>
-        <li v-for="(comment,index) in blogs[currentIndex].comments">
-          <p>{{comment.content}}</p>
+        <li v-for="(index) in blogs[currentIndex].comments.length" :key="index">
+          <p>{{this.blogs[currentIndex].comments[index-1]}}</p>
           <div class="comment-operate-view">
-            <button type="button"><ChatLineSquare/>回复</button>
             <button type="button"><Delete/>删除</button>
           </div>
         </li>
@@ -38,29 +37,13 @@
 
 <script>
 import {ChatLineSquare, Comment, Delete, Star} from "@element-plus/icons-vue";
-
+import axios from 'axios';
 export default {
   name: "MyBlog",
   components: {Comment, Delete, Star, ChatLineSquare},
   data() {
     return {
-      blogs: [
-        { title: "博客1", content: "这是博客1的内容", comments:[
-            {content:"这是评论1的内容,fjsgahlgkjljfildsghjkdghfahg;hreoifgjifhgushjifjghfajdghroifjgruihfjewrighdsfoidreghsfokPDirrghdfksdoprigjfkdaopfighsfkdporijgdgrehgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"},
-            {content:"这是评论2的内容"},
-            {content:"这是评论2的内容"},
-            {content:"这是评论2的内容"},
-            {content:"这是评论2的内容"},
-            {content:"这是评论2的内容"},
-            {content:"这是评论2的内容"},
-            {content:"这是评论2的内容"},
-        ]},
-        { title: "博客2", content: "这是博客2的内容", comments:[
-            {content:"这是评论1的内容"},
-            {content:"这是评论2的内容"},
-        ]},
-        // 更多博客...
-      ],
+      blogs: [],
       currentIndex: 0,
       intervalId: null,
       detailOpen: false,  // 是否打开了某个博客的详情页
@@ -72,6 +55,30 @@ export default {
     };
   },
   methods: {
+    async fetchUserArticles() {
+      try {
+        // 获取存储在 localStorage 中的 JWT token
+        const token = localStorage.getItem('jwt-token');
+        if (!token) {
+          console.error('No token found');
+          return;
+        }
+        // 调用后端 API 获取该用户的所有文章
+        const response = await axios.get('http://localhost:3000/api/user/articles', {
+          headers: {
+            Authorization: `Bearer ${token}` // 将 token 添加到请求头中
+          }
+        });
+        // 如果请求成功，将文章数据更新到 blogs
+        if (response.status === 200) {
+          this.blogs = response.data.articles;
+          console.log('这个是blog的内容');
+          console.log(this.blogs[4].comments[0]);
+        }
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+      }
+    },
     nextBlog() {
       const totalBlogs = this.blogs.length;
       this.currentIndex = (this.currentIndex + 1) % totalBlogs;
@@ -119,6 +126,7 @@ export default {
     clickDelete(){}
   },
   mounted() {
+    this.fetchUserArticles();
     this.startAutoPlay();
   },
   beforeDestroy() {

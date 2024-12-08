@@ -63,7 +63,7 @@ router.post('/api/users/login', async (ctx) => {
 
           if (foundUser.password === password) {
               console.log('Password match, login successful.');
-              const token = jwt.sign({ uid: foundUser.username }, secretKey, { expiresIn: '24h' });
+              const token = jwt.sign({ username: foundUser.username }, secretKey, { expiresIn: '24h' });
                console.log('Generated Token:', token);
               ctx.body = { status: 0, token };
           } else {
@@ -117,6 +117,92 @@ app.use(
     secret: secretKey
   }).unless({ path:[/^\/api\/users\/login/, /^\/api\/users\/register/] })
 );
+
+
+router.get('/api/userinfo', async (ctx) => {
+  try {
+    const username=ctx.state.user.username;
+    if (!username) {
+      ctx.status = 401;
+      ctx.body = { message: 'Token does not contain username' };
+      return;
+    }
+    // 查询用户信息
+    const user = await User.findOne({ username });
+    if (!user) {
+      ctx.status = 404;
+      ctx.body = { message: 'User not found' };
+    } else {
+      ctx.status = 200;
+      ctx.body = { user }; // 返回用户信息
+    }
+  } catch (error) {
+    console.error('Error verifying token or fetching user:', error);
+    ctx.status = 500;
+    ctx.body = { message: 'Internal server error' };
+  }
+});
+
+
+// 通过解析 JWT 获取用户名并查询该用户的所有文章
+router.get('/api/user/articles', async (ctx) => {
+  try {
+    const username=ctx.state.user.username;
+    // 查询该用户发布的所有文章
+    const articles = await Article.find({ author: username });
+    if (!articles || articles.length === 0) {
+      ctx.status = 404;
+      ctx.body = { message: 'No articles found for this user' };
+    } else {
+      ctx.status = 200;
+      ctx.body = { articles }; // 返回查询到的文章
+    }
+  } catch (error) {
+    console.error('Error verifying token or fetching articles:', error);
+    ctx.status = 500;
+    ctx.body = { message: 'Internal server error' };
+  }
+});
+
+// 删除评论接口
+router.delete('/api/article/:articleTitle/comment', async (ctx) => {
+  const { articleTitle } = ctx.params;
+  const { commentContent } = ctx.request.body;  // 从请求体中获取评论内容
+
+  try {
+    // 查找文章
+    const article = await Article.findOne({ title: articleTitle });
+    if (!article) {
+      ctx.status = 404;
+      ctx.body = { message: 'Article not found' };
+      return;
+    }
+
+    // 查找该评论并删除
+    const commentIndex = article.comments.findIndex(
+      (comment) => comment === commentContent
+    );
+
+    if (commentIndex === -1) {
+      ctx.status = 404;
+      ctx.body = { message: 'Comment not found' };
+      return;
+    }
+
+    // 删除评论
+    article.comments.splice(commentIndex, 1);
+    // 保存修改后的文章
+    await article.save();
+
+    ctx.status = 200;
+    ctx.body = { message: 'Comment deleted successfully' };
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    ctx.status = 500;
+    ctx.body = { message: 'Internal server error' };
+  }
+});
+
 // 查询接口
 router.get('/qsRanking', async (ctx) => {
   const { name, year, location, sort_by, order_by } = ctx.query;
@@ -168,42 +254,46 @@ router.get('/qsRanking', async (ctx) => {
 });
 
 
-// // 发布新帖子
-// router.post('/blog/publish', async (ctx) => {
-//   const { title, author, context } = ctx.request.body;
+// 发布新博客的接口
+router.post('/api/blog/publish', async (ctx) => {
+  try {
+    const { title, content } = ctx.request.body;
+    const author = ctx.state.user.username;
+    // 检查是否提供了所有必要的字段
+    if (!title || !author || !content) {
+      ctx.status = 400;
+      ctx.body = { message: 'Title, author, and content are required' };
+      return;
+    }
 
-//   try {
-//     // 查询是否已有该用户
-//     const existingTitle = await User.findOne({ title });
-//     if (existingTitle) {
-//       ctx.status = 400; // Bad Request
-//       ctx.body = { message: 'Title already exists' };
-//       return;
-//     }
+    // 创建一个新的文章对象
+    const newArticle = new Article({ title, author, content });
 
-//     const article = new Article({title, author, context });
-//     await article.save();
-//     ctx.status = 201; // Created
-//     ctx.body = { message: 'article publish successfully' };
-//   } catch (error) {
-//     console.error('Error during registration:', error);
-//     ctx.status = 500; // Internal Server Error
-//     ctx.body = { message: 'Failed to publish' };
-//   }
-// });
+    // 保存文章到数据库
+    await newArticle.save();
+    ctx.status = 201; // Created
+    ctx.body = { message: 'Article published successfully', article: newArticle };
 
-// //拉取帖子
-// router.get('/api/blog/get', async (ctx) => {
-//     try {
-//       const articles = await Article.find(); // 假设 Article 模型已经定义
-//       ctx.status = 200;
-//       ctx.body = articles;
-//     } catch (error) {
-//       console.error('Error fetching articles:', error);
-//       ctx.status = 500;
-//       ctx.body = { message: 'Failed to fetch articles' };
-//     }
-//   });
+  } catch (error) {
+    console.error('Error verifying token or saving article:', error);
+    ctx.status = 500;
+    ctx.body = { message: 'Failed to publish article' };
+  }
+});
+
+//获取帖子信息
+router.get('/api/blog_info/:title', async (ctx) => {
+    try {
+
+      const articles = await Article.find(); // 假设 Article 模型已经定义
+      ctx.status = 200;
+      ctx.body = articles;
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+      ctx.status = 500;
+      ctx.body = { message: 'Failed to fetch articles' };
+    }
+  });
 
 // 创建选择题
 router.post('/api/quizzes', async (ctx) => {

@@ -13,16 +13,16 @@
           <div class="avatar">头像</div>
         </div>
         <div class="profile-info info-list-row">
-          <p>用户名：Aberdeen Student</p>
-          <p>简介：我是一个喜欢学习的软件工程师</p>
+          <p>用户名：{{ user.username }}</p>
+          <p>简介：{{ user.personal_intro }}</p>
           <p>安全信息</p>
         </div>
       </div>
       <!-- 右侧容器：统计数据 -->
       <div class="right-container info-list-row">
-        <p>发布博客量：10</p>
-        <p>获赞量：100</p>
-        <p>对战次数：1</p>
+        <p>发布博客量：{{ user.blogs.length }}</p>
+        <p>获赞量：{{ user.totalLikes }}</p>
+        <p>对战次数：{{ user.battlesParticipated }}</p>
       </div>
       <div class="body-container">
         <!-- 中间选项卡 -->
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import Topbar from "@/components/Topbar.vue";
 import PublishBlog from "@/components/ProfilePage/PublishBlog.vue";
 import MyBlogs from "@/components/ProfilePage/MyBlogs.vue";
@@ -53,8 +54,20 @@ export default {
   data() {
     return {
       activeTab: "myBlogs", // 默认显示我的博客
-      selectComponents: MyBlogs
+      selectComponents: MyBlogs,
+      user: { // 初始化一个空的 user 对象
+        username: '',
+        personal_intro: '',
+        blogs: [],
+        totalLikes: 0,
+        battlesParticipated: 0,
+        favoriteTitles: [],
+        likedTitles: []
+      }
     };
+  },
+  mounted() {
+    this.fetchUserData();
   },
   methods: {
     setTab(tabName) {
@@ -69,6 +82,21 @@ export default {
         this.selectComponents = Favorites
       }
     },
+    async fetchUserData() {
+      try {
+        const token = localStorage.getItem('jwt-token'); // 从本地存储获取 JWT
+        if (!token) {
+          console.error('No JWT token found in localStorage');
+          return;
+        }
+        const response = await axios.get('http://localhost:3000/api/userinfo', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        this.user=response.data.user
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+      } 
   },
 };
 </script>

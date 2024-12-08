@@ -19,7 +19,7 @@ const routes = [
     },
     {
       path: "/qsRanking",
-      component: () => import("../views/QsRanking.vue")
+      component: () => import("../views/qsRanking.vue")
     },
     {
       path: "/profile",
@@ -27,7 +27,7 @@ const routes = [
     },
     {
       path: "/mainPage",
-      component: () => import("../views/MainPage.vue")
+      component: () => import("../views/mainPage.vue")
     }
   ]
 

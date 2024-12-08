@@ -3,3 +3,4 @@
 /backend/config
 backend/config/mysql_config.json
 frontend/package-lock.json
+/backend/node_modules
