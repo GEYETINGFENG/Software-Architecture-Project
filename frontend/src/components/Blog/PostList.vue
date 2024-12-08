@@ -41,7 +41,7 @@
 import { ref } from 'vue';
 
 const posts = ref([
-  { articleId: 1, title: 'Post 1', context: 'okjhgfds1qwe', likes: 0, comments: [], newComment: '' },
+  { articleId: 1, title: 'Post 1', context: 'Content of post 1', likes: 0, comments: [], newComment: '' },
   { articleId: 2, title: 'Post 2', context: 'Content of post 2', likes: 0, comments: [], newComment: '' },
   { articleId: 3, title: 'Post 3', context: 'Content of post 2', likes: 0, comments: [], newComment: '' },
   { articleId: 4, title: 'Post 4', context: 'Content of post 2', likes: 0, comments: [], newComment: '' },

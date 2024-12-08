@@ -163,6 +163,33 @@ router.get('/api/user/articles', async (ctx) => {
   }
 });
 
+// 删除文章接口
+router.delete('/api/article/:articleTitle', async (ctx) => {
+  const { articleTitle } = ctx.params; 
+
+  try {
+    // 查找该文章
+    const article = await Article.findOne({ title: articleTitle });
+    // 如果找不到文章，返回 404 错误
+    if (!article) {
+      ctx.status = 404;
+      ctx.body = { message: 'Article not found' };
+      return;
+    }
+    // 删除该文章
+    await Article.deleteOne({ title: articleTitle });
+    // 返回删除成功的响应
+    ctx.status = 200;
+    ctx.body = { message: 'Article deleted successfully' };
+
+  } catch (error) {
+    console.error('Error deleting article:', error);
+    ctx.status = 500;
+    ctx.body = { message: 'Internal server error' };
+  }
+});
+
+
 // 删除评论接口
 router.delete('/api/article/:articleTitle/comment', async (ctx) => {
   const { articleTitle } = ctx.params;

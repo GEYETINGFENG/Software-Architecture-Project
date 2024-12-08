@@ -1,50 +1,56 @@
 <template>
   <div class="like-records-container">
     <div class="like-record">
-      <div class="like-item">
+
+      <div v-for="(title, index) in user.likedTitles" :key="index" class="like-item">
         <span class="like-icon">❤️</span>
-        <p>Aberdeen Student likes “Mastering Study Skills: Tips for Efficient Learning”</p>
-      </div>
-      <div class="like-item">
-        <span class="like-icon">❤️</span>
-        <p>Aberdeen Student likes “Becoming a Lifelong Learner: Embracing Self-Directed Study”</p>
-      </div>
-      <div class="like-item">
-        <span class="like-icon">❤️</span>
-        <p>Aberdeen Student likes “Starting from Scratch: My Software Engineering Learning Journey”</p>
-      </div>
-      <div class="like-item">
-         <span class="like-icon">❤️</span>
-         <p>Aberdeen Student likes “The Art of Problem Solving: A Guide for Software Engineers”</p>
+        <p>{{ user.username }} likes “{{ title }}”</p>
       </div>
 
-      <div class="like-item">
-        <span class="like-icon">❤️</span>
-        <p>Aberdeen Student likes “Innovative Thinking: Strategies for Creative Solutions”</p>
-      </div>
-
-      <div class="like-item">
-        <span class="like-icon">❤️</span>
-        <p>Aberdeen Student likes “Data Structures and Algorithms: A Deep Dive”</p>
-      </div>
-
-      <div class="like-item">
-        <span class="like-icon">❤️</span>
-        <p>Aberdeen Student likes “User Experience Design: Principles and Practices”</p>
-      </div>
-
-      <div class="like-item">
-        <span class="like-icon">❤️</span>
-        <p>Aberdeen Student likes “Cybersecurity Fundamentals: Protecting Digital Assets”</p>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 export default {
-  name: "LikeRecords"
+  name: "LikeRecords",
+  data() {
+    return {
+      user: { // 初始化一个空的 user 对象
+        username: '',
+        personal_intro: '',
+        blogs: [],
+        totalLikes: 0,
+        battlesParticipated: 0,
+        favoriteTitles: [],
+        likedTitles: []
+      }
+    };
+  },
+  mounted() {
+    this.fetchUserData();
+  },
+  methods:{
+    async fetchUserData() {
+      try {
+        const token = localStorage.getItem('jwt-token'); // 从本地存储获取 JWT
+        if (!token) {
+          console.error('No JWT token found in localStorage');
+          return;
+        }
+        const response = await axios.get('http://localhost:3000/api/userinfo', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        this.user=response.data.user
+        console.log(this.user.likedTitles)
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+      }
+  }
 }
+
 </script>
 
 <style scoped>
