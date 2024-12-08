@@ -37,6 +37,7 @@
   bottom: 0;
   width: 100%;
   display: flex; /* 使用Flexbox布局 */
+  height: 7%;
 }
 
 .footbutton {
@@ -45,6 +46,10 @@
     padding: 1% 15%; /* 增加内边距 */
     min-width: 100px; /* 设置最小宽度 */
     margin: 1% 10%; /* 按钮之间的间距 */
+    height: 8%;
 }
 
+.footer{
+  height: 5%;
+}
 </style>
