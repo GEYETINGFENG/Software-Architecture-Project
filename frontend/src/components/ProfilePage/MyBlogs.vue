@@ -22,12 +22,11 @@
       </div>
       <button @click="nextBlog" class="carousel-control next">›</button>
     </div>
-    <div class="comment-list" v-if="commentOpen">
+    <div v-if="commentOpen" class="comment-list">
       <ul>
         <li v-for="(comment,index) in blogs[currentIndex].comments">
           <p>{{comment.content}}</p>
           <div class="comment-operate-view">
-            <button type="button"><ChatLineSquare/>回复</button>
             <button type="button"><Delete/>删除</button>
           </div>
         </li>
@@ -220,7 +219,6 @@ export default {
 
 }
 
-
 .operate-view button:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
@@ -228,6 +226,12 @@ export default {
 .operate-view button svg{
   width: 100%;
   height: 100%;
+}
+
+.comment-scrollbar{
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .comment-list{
@@ -239,7 +243,7 @@ export default {
 .comment-list ul{
   list-style: none;
   padding: 0;
-  width: 80%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -271,10 +275,9 @@ export default {
 }
 
 .comment-operate-view{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-
-
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .comment-operate-view button{
