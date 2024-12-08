@@ -12,7 +12,8 @@
         <div>
           <div class="avatar">头像</div>
         </div>
-        <!-- 右侧容器：统计数据 -->
+      </div>
+      <!-- 右侧容器：统计数据 -->
         <div class="right-container info-list-row">
           <p>发布博客量：10</p>
           <p>获赞量：100</p>
@@ -31,7 +32,6 @@
             <component :is="selectComponents"/>
           </div>
         </div>
-      </div>
     </div>
   </div>
 </template>
@@ -100,10 +100,10 @@ export default {
     "a b"
     "c c";
   grid-gap: 20px;
+  padding-top: 5%;
 
   height: 100%;
-  max-width: 1980px;
-  min-width: 1280px;
+  width: 1280px;
 
 }
 
