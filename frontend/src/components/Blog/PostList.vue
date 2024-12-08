@@ -10,8 +10,8 @@
       <h2>{{ post.title }}</h2>
       <p>{{ post.context }}</p>
       <h6>total {{ post.likes }} likes</h6>
-        <el-button type="success" round @click.stop="likePost(post.articleId)" class="funbutton">点赞</el-button>
-        <el-button type="warning" round @click.stop="collectPost(post.articleId)" class="funbutton">收藏</el-button>
+        <el-button type="success" round @click.stop="likePost(post.articleId)" class="funbutton">Like</el-button>
+        <el-button type="warning" round @click.stop="collectPost(post.articleId)" class="funbutton">Favorite</el-button>
 
       <!-- 评论区域 -->
       <transition name="fade">
@@ -20,10 +20,10 @@
             <el-input
               type="textarea"
               v-model="post.newComment"
-              placeholder="写下你的评论..."
+              placeholder="Write your comment..."
               class="inputbox"
             />
-            <el-button type="primary" round @click="submitComment(post.articleId)" class="submit-button">发表评论</el-button>
+            <el-button type="primary" round @click="submitComment(post.articleId)" class="submit-button">Post Comment</el-button>
           </div>
           <!-- 显示评论 -->
           <div v-for="comment in post.comments" :key="comment.id" class="comment">

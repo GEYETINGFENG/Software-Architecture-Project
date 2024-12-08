@@ -1,8 +1,8 @@
 <template>
   <footer  class="footer">
     <div class="innerfooter">
-    <el-button type="danger" @click="submithistory" plain class="footbutton">发布历史</el-button>
-    <el-button type="danger" @click="mycollections" plain class="footbutton">我的收藏</el-button>
+    <el-button type="danger" @click="submithistory" plain class="footbutton">My Blogs</el-button>
+    <el-button type="danger" @click="mycollections" plain class="footbutton">My collection</el-button>
     </div>
   </footer>
 </template>

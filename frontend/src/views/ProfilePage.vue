@@ -13,24 +13,36 @@
           <div class="avatar">头像</div>
         </div>
         <div class="profile-info info-list-row">
+<<<<<<< Updated upstream
           <p>用户名：Aberdeen Student</p>
           <p>简介：我是一个喜欢学习的软件工程师</p>
           <p>安全信息</p>
+=======
+          <p>Username：{{ user.username }}</p>
+          <p>Email：{{ user.email }}</p>
+          <p>Introduction：{{ user.personal_intro }}</p>
+>>>>>>> Stashed changes
         </div>
       </div>
       <!-- 右侧容器：统计数据 -->
       <div class="right-container info-list-row">
+<<<<<<< Updated upstream
         <p>发布博客量：10</p>
         <p>获赞量：100</p>
         <p>对战次数：1</p>
+=======
+        <p>Number of blogs published：{{ user.blogs.length }}</p>
+        <p>Number of likes：{{ user.totalLikes }}</p>
+        <p>Number of battles：{{ user.battlesParticipated }}</p>
+>>>>>>> Stashed changes
       </div>
       <div class="body-container">
         <!-- 中间选项卡 -->
         <div class="tabs-container">
-          <button type="button" @click="setTab('myBlogs')" :class="activeTab==='myBlogs'?'activate-tab':''">我的博客</button>
-          <button type="button" @click="setTab('publishBlog')" :class="activeTab==='publishBlog'?'activate-tab':''">发布博客</button>
-          <button type="button" @click="setTab('likeRecords')" :class="activeTab==='likeRecords'?'activate-tab':''">点赞记录</button>
-          <button type="button" @click="setTab('favorites')" :class="activeTab==='favorites'?'activate-tab':''">收藏记录</button>
+          <button type="button" @click="setTab('myBlogs')" :class="activeTab==='myBlogs'?'activate-tab':''">My Blogs</button>
+          <button type="button" @click="setTab('publishBlog')" :class="activeTab==='publishBlog'?'activate-tab':''">Publish Blog</button>
+          <button type="button" @click="setTab('likeRecords')" :class="activeTab==='likeRecords'?'activate-tab':''">Like History</button>
+          <button type="button" @click="setTab('favorites')" :class="activeTab==='favorites'?'activate-tab':''">Favorite History</button>
         </div>
         <!-- 内容展示 -->
         <div class="content">
@@ -74,6 +86,21 @@ export default {
 </script>
 
 <style scoped>
+<<<<<<< Updated upstream
+=======
+
+.content{
+  width: auto;
+}
+
+.body-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+>>>>>>> Stashed changes
 .container{
   display: flex;
   flex-direction: column;
@@ -168,6 +195,7 @@ export default {
   display: flex;
   flex-direction: column;
   text-align: center;
+  width: 80%;
 }
 
 .tabs-container {
