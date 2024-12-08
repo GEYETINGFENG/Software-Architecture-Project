@@ -7,3 +7,4 @@ frontend/package-lock.json
 backend/package-lock.json
 /node_modules
 package-lock.json
+backend/config/mysql_config.json
