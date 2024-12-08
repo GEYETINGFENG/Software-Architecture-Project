@@ -5,13 +5,31 @@
       Your browser does not support the video tag.
     </video>
     <Topbar />
-    <QuizStart @game-started="startGame" @roomID="getRoomID" v-if="!gameStarted" :username="username"/>
-    <QuizAnswering v-if="gameStarted && !gameCompleted" :roomID="roomID" @game-completed="getGameCompleted" :username="username" @correctAnswer="getCorrectAnswers"/>
-    <QuizResult v-if="gameCompleted" :username="username"/>
+    <QuizStart :socket="socket"
+               @game-started="startGame"
+               @roomID="getRoomID"
+               v-if="!gameStarted"
+               :username="username"/>
+    <QuizAnswering v-if="gameStarted && !gameCompleted"
+                   :socket="socket"
+                   :roomID="roomID"
+                   @game-completed="getGameCompleted"
+                   :username="username"
+                   @answeredQuestions="getAnsweredQuestions"
+                   @userTimes="getUserTimes"
+                   :stopTimer="stopTimer"
+    />
+    <QuizResult v-if="gameCompleted"
+                :socket="socket"
+                :username="username"
+                :user_result="answeredQuestions"
+                :userTimes="userTimes"
+                @onConfirmButtonClick="resetQuiz"
+                :roomID="roomID"
+    />
+
   </div>
 </template>
-
-
 
 <script>
 import Topbar from '../components/Topbar.vue';
@@ -19,6 +37,7 @@ import QuizStart from '../components/Quiz/QuizStart.vue';
 import QuizAnswering from '../components/Quiz/QuizAnswering.vue';
 import QuizResult from '../components/Quiz/QuizResult.vue';
 
+import { io } from 'socket.io-client';
 import axios from 'axios';
 
 export default {
@@ -34,23 +53,33 @@ export default {
       gameCompleted: false,
       roomID: '',
       username: null,
-      correctAnswers: 0,
+      answeredQuestions: [],
+      socket: null,
+      userTimes:{},
+      stopTimer: false
     };
   },
   methods: {
     startGame(newValue) {
       this.gameStarted = newValue;
+      this.socket.emit('getQuestions', this.roomID);
     },
     getRoomID(roomID) {
       this.roomID = roomID;
     },
     getGameCompleted(newValue) {
-      console.log('Game completed: Parent', newValue);
       this.gameCompleted = newValue;
     },
-    getCorrectAnswers(newValue) {
-      console.log('Game completed: Parent', newValue);
-      this.correctAnswers = newValue;
+    getAnsweredQuestions(newValue) {
+      console.log('getAnsweredQuestions1'+ newValue);
+      this.answeredQuestions = newValue;
+    },
+    getUserTimes(newValue) {
+      this.userTimes = newValue;
+    },
+    resetQuiz() {
+      this.gameCompleted = false;
+      this.gameStarted = false;
     },
     async fetchUserData() {
       try {
@@ -70,8 +99,25 @@ export default {
   },
   mounted() {
     this.fetchUserData();
-  }
 
+    this.socket.on('AllQuestionCompleted', (username, questions,timer) => {
+      if (username === this.username) {
+        this.stopTimer = true;
+        this.userTimes = timer;
+
+        this.answeredQuestions = questions;
+        this.gameCompleted = true;
+
+      }else{
+        this.userTimes = timer;
+        this.answeredQuestions = questions;
+      }
+    });
+  },
+  beforeMount() {
+    this.socket = io('http://localhost:3001');
+    console.log(this.socket);
+  }
 };
 </script>
 

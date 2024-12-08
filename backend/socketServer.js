@@ -6,7 +6,7 @@ const PORT = 3001; // Socket.IO 服务器的端口
 const server = http.createServer();
 const io = new SocketIO(server, {
   cors: {
-    origin: "http://localhost:5173", // 前端的地址
+    origin: ["http://localhost:5173","http://10.252.145.181:5173"], // 前端的地址
     methods: ["GET", "POST"]
   }
 });
@@ -21,7 +21,7 @@ io.on('connection', (socket) => {
   socket.on('createRoom', (username, roomId) => {
     //监听客户端发送的createRoom事件，当客户端请求创建一个房间时执行该回调
     if (!rooms[roomId]) {// 如果房间不存在
-      rooms[roomId] = {players: [], questions: [], readyCount:0, timer: null};
+      rooms[roomId] = {players: [], questions: [], readyCount:0, timer: {}};
       rooms[roomId].players.push({ username: username, correctAnswers: 0 });
       socket.join(roomId);
       socket.emit('roomCreated', roomId);
@@ -68,17 +68,23 @@ io.on('connection', (socket) => {
 
 
   // 提交答案
-  socket.on('submitAnswer', (roomId, username, question_index, answer_index) => {
-    const question = rooms[roomId].questions[question_index];
-    const player = rooms[roomId].players.find(player => player.username === username);
-
-    if (question.answer === question.options[answer_index]) {
-      if (player) {
-        player.correctAnswers += 1;
+  socket.on('submitAnswer', (roomId, username, question_index, answer_index,timer) => {
+    try {
+      const question = rooms[roomId].questions[question_index];
+      if (!question.user_answers) {
+        question.user_answers = {};
       }
-    }
-    if (question_index + 1 ===rooms[roomId].questions.length) {
-      io.emit("AllQuestionCompleted", username, player.correctAnswers)
+      question.user_answers[username] = question.options[answer_index];
+      rooms[roomId].timer[username] = timer;
+
+      if (question_index + 1 === rooms[roomId].questions.length) {
+        console.log(rooms[roomId].timer);
+        io.emit("AllQuestionCompleted", username, rooms[roomId].questions, rooms[roomId].timer);
+        console.log(rooms[roomId].questions);
+      }
+    }catch (e){
+      socket.disconnect();
+      console.error(e);
     }
   });
 

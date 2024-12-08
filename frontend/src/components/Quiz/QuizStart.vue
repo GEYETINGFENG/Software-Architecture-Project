@@ -19,45 +19,15 @@
           <p v-if="getReady" class="status-message">匹配中...</p>
       </div>
 
-
-<!--      &lt;!&ndash; 倒计时 &ndash;&gt;-->
-<!--      <div v-if="gameStarted && !completed && timer > 0" class="timer">-->
-<!--        <h2>倒计时: {{ timer }} 秒</h2>-->
-<!--      </div>-->
-<!--  -->
-<!--      &lt;!&ndash; 题目区域 &ndash;&gt;-->
-<!--      <div v-if="gameStarted && !completed" class="questions-section">-->
-<!--        <h2>游戏开始!</h2>-->
-<!--        <div v-for="(question, index) in questions" :key="index" class="question-card">-->
-<!--          <p class="question-text">{{ question.question }}</p>-->
-<!--          <div class="options" v-for="(option, optIndex) in question.options" :key="optIndex">-->
-<!--            <input type="radio" :id="'option' + index + optIndex" :value="option" v-model="answers[index]" />-->
-<!--            <label :for="'option' + index + optIndex">{{ option }}</label>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <button class="submit-button" @click="submitAllAnswers">提交所有答案</button>-->
-<!--      </div>-->
-<!--  -->
-<!--      &lt;!&ndash; 游戏完成后的结果区域 &ndash;&gt;-->
-<!--      <div v-if="completed" class="result-section">-->
-<!--        <h2>答题已完成！</h2>-->
-<!--        <p>总用时：{{ completionTime }} 秒</p>-->
-<!--        <p>正确率：{{ (correctAnswersCount / questions.length * 100).toFixed(2) }}%</p>-->
-<!--      </div>-->
-  
-      <!-- 错误信息 -->
       <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     </div>
   </template>
   
   <script>
-  import { io } from 'socket.io-client';
 
   export default {
     data() {
       return {
-        socket: null,
-
         tempRoomId: '',
         RoomId: '',
 
@@ -69,19 +39,20 @@
     },
     watch: {
       gameStarted(newValue) {
-        this.$emit('game-started', newValue);
         this.$emit('roomID', this.RoomId);
+        this.$emit('game-started', newValue);
       },
-
     },
     props: {
       username: {
         type: String,
         required: true,
       },
+      socket: {
+        required: true,
+      }
     },
     mounted() {
-      this.socket = io('http://localhost:3001');
   
       this.socket.on('roomCreated', (roomId) => {
         this.RoomId = roomId;

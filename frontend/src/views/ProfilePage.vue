@@ -6,10 +6,9 @@
     </video>
     <Topbar class="Topbar"/>
     <div id="profile">
-      <!-- 头部信息，分为左右两个容器 -->
-      <!-- 左侧容器：头像和基本信息 -->
       <div class="left-container">
-          <div class="avatar">头像</div>
+        <div class="avatar">
+          头像
         </div>
         <div class="profile-info info-list-row">
           <p>用户名：{{ user.username }}</p>
@@ -17,12 +16,12 @@
           <p>简介：{{ user.personal_intro }}</p>
         </div>
       </div>
-      <!-- 右侧容器：统计数据 -->
       <div class="right-container info-list-row">
         <p>发布博客量：{{ user.blogs.length }}</p>
         <p>获赞量：{{ user.totalLikes }}</p>
         <p>对战次数：{{ user.battlesParticipated }}</p>
       </div>
+    </div>
       <div class="body-container">
         <!-- 中间选项卡 -->
         <div class="tabs-container">
@@ -37,7 +36,8 @@
         </div>
       </div>
     </div>
-  </div>
+
+
 </template>
 
 <script>
@@ -135,7 +135,7 @@ export default {
   padding-top: 5%;
 
   height: 100%;
-  width: 1280px;
+  width: 80%;
 
 }
 
@@ -178,6 +178,7 @@ export default {
 
 .body-container{
   grid-area: c;
+  width: 80%;
 }
 
 .avatar {
