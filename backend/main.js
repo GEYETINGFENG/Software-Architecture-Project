@@ -163,6 +163,26 @@ router.get('/api/user/articles', async (ctx) => {
   }
 });
 
+
+// 通过查询所有文章
+router.get('/api/articles', async (ctx) => {
+  try {
+    const articles = await Article.find();
+    if (!articles || articles.length === 0) {
+      ctx.status = 404;
+      ctx.body = { message: 'No articles' };
+    } else {
+      ctx.status = 200;
+      ctx.body = { articles }; // 返回查询到的文章
+    }
+  } catch (error) {
+    console.error('Error verifying token or fetching articles:', error);
+    ctx.status = 500;
+    ctx.body = { message: 'Internal server error' };
+  }
+});
+
+
 // 删除文章接口
 router.delete('/api/article/:articleTitle', async (ctx) => {
   const { articleTitle } = ctx.params; 
@@ -189,6 +209,111 @@ router.delete('/api/article/:articleTitle', async (ctx) => {
   }
 });
 
+//发布评论接口
+router.post('/api/article/:articleTitle/comment', async (ctx) => {
+  try {
+    const { articleTitle } = ctx.params;
+    const { comment } = ctx.request.body;
+    const author = ctx.state.user.username;
+    // 检查是否提供了所有必要的字段
+    if (!author || !comment || !articleTitle) {
+      ctx.status = 400;
+      ctx.body = { message: 'Author, articleTitle and comment are required' };
+      return;
+    }
+    // 查找文章
+    const article = await Article.findOne({ title: articleTitle });
+    if (!article) {
+      ctx.status = 404;
+      ctx.body = { message: 'Article not found' };
+      return;
+    }
+    // 添加评论到文章的 comments 数组，包含评论和评论作者
+    article.comments.push(`${author}: ${comment}`);
+    // 保存文章到数据库
+    await article.save();
+
+    ctx.body = {
+      message: 'Comment published successfully',
+      article,
+    };
+
+  } catch (error) {
+    console.error('Error saving comment:', error);
+    ctx.status = 500; // Internal Server Error
+    ctx.body = { message: 'Failed to publish comment' };
+  }
+});
+
+//点赞接口
+router.post('/api/article/:articleTitle/like', async (ctx) => {
+  try {
+    const { articleTitle } = ctx.params;
+    const author = ctx.state.user.username;
+    // 检查是否提供了所有必要的字段
+    if (!author || !articleTitle) {
+      ctx.status = 400;
+      ctx.body = { message: 'Author and articleTitle are required' };
+      return;
+    }
+    // 查找文章
+    const article = await Article.findOne({ title: articleTitle });
+    if (!article) {
+      ctx.status = 404;
+      ctx.body = { message: 'Article not found' };
+      return;
+    }
+    // 添加评论到文章的 comments 数组，包含评论和评论作者
+    article.likes++;
+    // 保存文章到数据库
+    await article.save();
+
+    ctx.body = {
+      message: 'Like added successfully',
+      likes: article.likes, // 返回更新后的点赞数
+    };
+
+  } catch (error) {
+    console.error('Error liking the article:', error);
+    ctx.status = 500; // Internal Server Error
+    ctx.body = { message: 'Failed to add like' };
+  }
+});
+
+//收藏接口
+router.post('/api/article/:articleTitle/favorite', async (ctx) => {
+  try {
+    const { articleTitle } = ctx.params;
+    const author = ctx.state.user.username;
+    // 检查是否提供了所有必要的字段
+    if (!author || !articleTitle) {
+      ctx.status = 400;
+      ctx.body = { message: 'Author and articleTitle are required' };
+      return;
+    }
+    // 查找文章
+    const article = await Article.findOne({ title: articleTitle });
+    if (!article) {
+      ctx.status = 404;
+      ctx.body = { message: 'Article not found' };
+      return;
+    }
+    // 添加评论到文章的 comments 数组，包含评论和评论作者
+    article.favorites++;
+    // 保存文章到数据库
+    await article.save();
+
+    ctx.body = {
+      message: 'Like added successfully',
+      favorites: article.favorites, // 返回更新后的点赞数
+    };
+
+  } catch (error) {
+    console.error('Error liking the article:', error);
+    ctx.status = 500; // Internal Server Error
+    ctx.body = { message: 'Failed to add favorite' };
+  }
+});
 
 // 删除评论接口
 router.delete('/api/article/:articleTitle/comment', async (ctx) => {
@@ -311,7 +436,7 @@ router.post('/api/blog/publish', async (ctx) => {
 router.get('/api/blog_info/:title', async (ctx) => {
     try {
 
-      const articles = await Article.find(); // 假设 Article 模型已经定义
+      const articles = await Article.find(); 
       ctx.status = 200;
       ctx.body = articles;
     } catch (error) {
@@ -320,6 +445,8 @@ router.get('/api/blog_info/:title', async (ctx) => {
       ctx.body = { message: 'Failed to fetch articles' };
     }
   });
+
+
 
 // 创建选择题
 router.post('/api/quizzes', async (ctx) => {

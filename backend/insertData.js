@@ -1,22 +1,132 @@
 import mongoose from 'mongoose';
-import { User } from './models/User.js'; // 假设你已经按照上面的代码导出了 User 模型
-
+import { Quiz } from './models/Quiz.js'; 
 // 创建连接到 MongoDB 的连接
-const userlistConnection = mongoose.createConnection('mongodb://localhost:27017/SoftwareArchitecure');
+const quizlistConnection = mongoose.createConnection('mongodb://localhost:27017/SoftwareArchitecure');
 
-const insertUsers = async () => {
-  // 定义插入的用户数据
-  const usersData = [
-    {
-      username: 'user3',
-      email: 'user1@example.com',
-      password: 'lB2rbSK0PGq2QDJXXWVvhA==',
-      blogs: ['A Brief History of Ancient Egypt', 'How Technology is Changing Education', 'The Rise of Machine Learning', 'The Impact of Technology on Society', 'Understanding AI in 2024'],
-      personal_intro: 'This is user1\'s introduction.',
-      battlesParticipated: 5,
-      favoriteTitles: ['A Brief History of Ancient Egypt', 'How Technology is Changing Education', 'The Rise of Machine Learning', 'The Impact of Technology on Society', 'Understanding AI in 2024'],
-      likedTitles: ['A Brief History of Ancient Egypt', 'How Technology is Changing Education', 'The Rise of Machine Learning', 'The Impact of Technology on Society', 'Understanding AI in 2024']
-    }
+// 数据要插入的数组
+const quizzes = [
+  {
+    questionId: "1",
+    question: "What has hands but can’t clap?",
+    options: ["A clock", "A doll", "A robot", "A glove"],
+    answer: "A clock",
+  },
+  {
+    questionId: "2",
+    question: "I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?",
+    options: ["An echo", "A shadow", "A dream", "A breeze"],
+    answer: "An echo",
+  },
+  {
+    questionId: "3",
+    question: "The more of this you take, the more you leave behind. What is it?",
+    options: ["Time", "Footsteps", "Memories", "Holes"],
+    answer: "Footsteps",
+  },
+  {
+    questionId: "4",
+    question: "I’m light as a feather, yet the strongest person can’t hold me for five minutes. What am I?",
+    options: ["Breath", "A bubble", "Hope", "A shadow"],
+    answer: "Breath",
+  },
+  {
+    questionId: "5",
+    question: "What can run but never walks, has a bed but never sleeps, has a mouth but never talks?",
+    options: ["A river", "A car", "A shadow", "A machine"],
+    answer: "A river",
+  },
+  {
+    questionId: "6",
+    question: "What has many keys but can’t open a single lock?",
+    options: ["A piano", "A map", "A treasure chest", "A door"],
+    answer: "A piano",
+  },
+  {
+    questionId: "7",
+    question: "What has a heart that doesn’t beat?",
+    options: ["An artichoke", "A rock", "A shadow", "A robot"],
+    answer: "An artichoke",
+  },
+  {
+    questionId: "8",
+    question: "What begins with T, ends with T, and has T in it?",
+    options: ["A teapot", "A train", "A tent", "A ticket"],
+    answer: "A teapot",
+  },
+  {
+    questionId: "9",
+    question: "What has an eye but can’t see?",
+    options: ["A needle", "A hurricane", "A storm", "A potato"],
+    answer: "A needle",
+  },
+  {
+    questionId: "10",
+    question: "What comes down but never goes up?",
+    options: ["Rain", "A shadow", "A balloon", "An anchor"],
+    answer: "Rain",
+  },
+];
+
+
+// 插入数据到 MongoDB 的函数
+const insertQuizzes = async () => {
+  try {
+    const quizModel = quizlistConnection.model('Quiz', Quiz.schema);
+
+    // 插入数据
+    const result = await quizModel.insertMany(quizzes);
+    console.log('Quizzes inserted successfully:', result);
+
+    // 关闭数据库连接
+    quizlistConnection.close();
+  } catch (error) {
+    console.error('Error inserting quizzes:', error);
+
+    // 如果有错误也要关闭数据库连接
+    quizlistConnection.close();
+  }
+};
+
+// 调用插入函数
+insertQuizzes();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const insertUsers = async () => {
+//   // 定义插入的用户数据
+//   const usersData = [
+//     {
+//       username: 'user3',
+//       email: 'user1@example.com',
+//       password: 'lB2rbSK0PGq2QDJXXWVvhA==',
+//       blogs: ['A Brief History of Ancient Egypt', 'How Technology is Changing Education', 'The Rise of Machine Learning', 'The Impact of Technology on Society', 'Understanding AI in 2024'],
+//       personal_intro: 'This is user1\'s introduction.',
+//       battlesParticipated: 5,
+//       favoriteTitles: ['A Brief History of Ancient Egypt', 'How Technology is Changing Education', 'The Rise of Machine Learning', 'The Impact of Technology on Society', 'Understanding AI in 2024'],
+//       likedTitles: ['A Brief History of Ancient Egypt', 'How Technology is Changing Education', 'The Rise of Machine Learning', 'The Impact of Technology on Society', 'Understanding AI in 2024']
+//     }
 //     {
 //       username: 'user2',
 //       email: 'user2@example.com',
@@ -37,19 +147,19 @@ const insertUsers = async () => {
 //       favoriteTitles: ['Blog 2 Title', 'Blog 3 Title'],
 //       likedTitles: ['Blog 5 Title']
 //     }
-  ];
+//   ];
 
-  try {
-    // 插入多个用户数据
-    await User.insertMany(usersData);
-    console.log('Users inserted successfully!');
-  } catch (error) {
-    console.error('Error inserting users:', error);
-  } finally {
-    // 关闭连接
-    userlistConnection.close();
-  }
-};
+//   try {
+//     // 插入多个用户数据
+//     await User.insertMany(usersData);
+//     console.log('Users inserted successfully!');
+//   } catch (error) {
+//     console.error('Error inserting users:', error);
+//   } finally {
+//     // 关闭连接
+//     userlistConnection.close();
+//   }
+// };
 
 // // 执行插入操作
 // insertUsers();
@@ -314,5 +424,5 @@ const insertUsers = async () => {
 //   }
 // };
 
-// 执行插入操作
-insertUsers();
+// // 执行插入操作
+// insertUsers();
