@@ -1,4 +1,3 @@
-// routes/userRoutes.js
 import Router from 'koa-router';
 import * as userController from '../controllers/userController.js';
 
@@ -13,4 +12,4 @@ userRouter.post('/api/users/register', userController.register);
 // 获取用户信息
 userRouter.get('/api/userinfo', userController.getUserInfo);
 
-export {userRouter};
+export default userRouter; 
