@@ -1,4 +1,4 @@
-import { Article } from '../models/Article.js';
+import { Article } from '../Models/Article.js';
 
 // 获取所有文章
 const getArticles = async (ctx) => {

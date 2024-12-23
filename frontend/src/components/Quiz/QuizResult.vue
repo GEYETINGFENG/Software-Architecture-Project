@@ -44,6 +44,10 @@ export default {
       let rightAnswerNum = 0;
       if(!this.user_result)return 0;
       for (let i=0;i<quizResultNum;i++){
+        if(!this.user_result[i].user_answers){
+          console.error("user_answers is not defined");
+          return 0;
+        }
         if(this.user_result[i].answer === this.user_result[i].user_answers[this.username]){
           rightAnswerNum++;
         }

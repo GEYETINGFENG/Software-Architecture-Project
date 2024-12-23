@@ -10,7 +10,9 @@
                @game-started="startGame"
                @roomID="getRoomID"
                v-if="!gameStarted"
-               :username="username"/>
+               :username="username"
+               :key="componentKey"
+    />
     <QuizAnswering v-if="gameStarted && !gameCompleted"
                    :socket="socket"
                    :roomID="roomID"
@@ -19,6 +21,7 @@
                    @answeredQuestions="getAnsweredQuestions"
                    @userTimes="getUserTimes"
                    :stopTimer="stopTimer"
+                    :key="componentKey"
     />
     <QuizResult v-if="gameCompleted"
                 :socket="socket"
@@ -27,6 +30,7 @@
                 :userTimes="userTimes"
                 @onConfirmButtonClick="resetQuiz"
                 :roomID="roomID"
+                :key="componentKey"
     />
 
   </div>
@@ -57,7 +61,8 @@ export default {
       answeredQuestions: [],
       socket: null,
       userTimes:{},
-      stopTimer: false
+      stopTimer: false,
+      componentKey: 0
     };
   },
   methods: {
@@ -108,6 +113,8 @@ export default {
 
         this.answeredQuestions = questions;
         this.gameCompleted = true;
+
+        this.componentKey += 1;
 
       }else{
         this.userTimes = timer;

@@ -10,8 +10,10 @@
       <h2>{{ post.title }}</h2>
       <p>{{ post.content }}</p>
       <h6>total {{ post.likes }} likes  || total {{ post.favorites }} favorites</h6>
-      <el-button type="success" round @click.stop="likePost(post.title)" class="funbutton">Like</el-button>
-      <el-button type="warning" round @click.stop="collectPost(post.title)" class="funbutton">Favorite</el-button>
+      <div class="button-container">
+        <el-button type="success" round @click.stop="likePost(post.title)" class="fun_button">Like</el-button>
+        <el-button type="warning" round @click.stop="collectPost(post.title)" class="fun_button">Favorite</el-button>
+      </div>
       <!-- 评论区域 -->
       <transition name="fade">
         <div v-if="currentPostId === post._id" class="comment-section">
@@ -146,8 +148,8 @@ function viewPost(id) {
 <style>
 
 
-.funbutton{
-  width: 100%;
+.fun_button{
+  width: 45%;
 }
 
 /* 外层滚动容器样式 */

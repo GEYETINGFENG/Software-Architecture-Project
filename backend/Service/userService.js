@@ -1,4 +1,4 @@
-import { User } from '../models/User.js';
+import { User } from '../Models/User.js';
 import jwt from 'jsonwebtoken';
 const secretKey = 'my_app_secret';
 

@@ -1,4 +1,4 @@
-import { Article } from '../models/Article.js';
+import { Article } from '../Models/Article.js';
 
 // 发布评论
 const publishComment = async (ctx) => {
