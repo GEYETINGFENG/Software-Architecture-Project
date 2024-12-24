@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Quiz } from './models/Quiz.js'; 
+import { Quiz } from './Models/Quiz.js'; 
 // 创建连接到 MongoDB 的连接
 const quizlistConnection = mongoose.createConnection('mongodb://localhost:27017/SoftwareArchitecure');
 
