@@ -6,7 +6,7 @@ import userController from './Controller/userController.js';
 import universityController from './Controller/universityController.js';
 import articleController from './Controller/articleController.js';
 import commentController from './Controller/commentController.js';
-import { jwtMiddleware } from './middlewares/jwtMiddleware.js';
+import { jwtMiddleware } from './Middlewares/jwtMiddleware.js';
 const app = new Koa();
 
 // 链接数据库

@@ -1,12 +1,12 @@
 <template>
     <div class="container">
-      <h1>双人答题对战</h1>
+      <h1>Lets Play a Game!</h1>
   
       <!-- 输入和按钮区域 -->
       <div class="input-section">
         <input v-model="tempRoomId" placeholder="Room ID" />
-        <button class="primary-button" @click="createRoom">创建房间</button>
-        <button class="primary-button" @click="joinRoom">加入房间</button>
+        <button class="primary-button" @click="createRoom">Create a Room</button>
+        <button class="primary-button" @click="joinRoom">Join a Room</button>
       </div>
   
       <!-- 创建或加入房间之后 -->
@@ -14,12 +14,10 @@
         <!-- 只有在房间ID且游戏未完成时才显示房间信息 -->
         <div>
           <h2>Enter Room {{ RoomId }} Successfully!</h2>
-          <button class="primary-button" v-if="!getReady" @click="startGame">开始游戏</button>
+          <button class="primary-button" v-if="!getReady" @click="startGame">Start Game</button>
         </div>
-          <p v-if="getReady" class="status-message">匹配中...</p>
+          <p v-if="getReady" class="status-message">Finding Opponent...</p>
       </div>
-
-      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     </div>
   </template>
   

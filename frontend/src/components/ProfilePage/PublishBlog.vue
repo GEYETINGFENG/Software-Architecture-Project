@@ -38,10 +38,10 @@ export default {
         const response = await axios.post(
           'http://localhost:3000/api/blog/publish',
           { title: this.title_input, content },
-          { headers: { Authorization: `Bearer ${token}` } } // 使用 Bearer token 认证
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         console.log(response.data);
-        alert('Article published successfully');
+        alert('Published successfully');
       } catch (error) {
         console.error(error.response.data);
         alert(error.response.data.message || 'Publication failed');

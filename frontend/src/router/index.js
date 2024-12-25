@@ -14,10 +14,6 @@ const routes = [
     component: () => import("../views/Quiz.vue")
   },
   {
-    path: "/result",
-    component: () => import("../views/Result.vue")
-  },
-  {
     path: "/qsRanking",
     component: () => import("../views/qsRanking.vue")
   },

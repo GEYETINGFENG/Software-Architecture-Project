@@ -9,6 +9,7 @@ import 'element-plus/dist/index.css';
 
 const app = createApp(App); // 创建应用实例
 
+
 app.use(router); // 使用路由
 app.use(ElementPlus); // 使用 Element Plus
 

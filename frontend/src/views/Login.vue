@@ -77,6 +77,8 @@
 <script>
 import axios from 'axios'; 
 import CryptoJS from 'crypto-js';
+import { ElMessage } from 'element-plus';
+
 export default {
   data() {
   return {
@@ -147,6 +149,11 @@ export default {
 
         if (response.data.status === 0) {
           const token = response.data.token;
+          ElMessage({
+            message: 'Login successful!',
+            type: 'success',
+            customClass: 'custom-message',
+          });
           localStorage.setItem('jwt-token', token);
           this.$router.push('/mainPage');//本来想推送到主页，但是主页没做出来
         } else {
@@ -172,7 +179,11 @@ export default {
           console.log(response.data)
           if (response.data.status === 0) {
             console.log('Registration successful!');
-            alert('Registration successful!');
+            ElMessage({
+              message: 'Registration successful!',
+              type: 'success',
+              customClass: 'custom-message',
+            });
           } else {
             console.error('Registration failed:', response.data.msg);
           }
