@@ -2,6 +2,8 @@
 backend/config/mysql_config.json
 backend/node_modules
 backend/package-lock.json
+node_modules
+Models/node_modules
 frontend/package-lock.json
 frontend/node_modules
 package-lock.json

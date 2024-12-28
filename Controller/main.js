@@ -2,10 +2,10 @@ import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import cors from '@koa/cors';
 import { connectMongoDB} from './config/database.js';
-import userController from './Controller/userController.js';
-import universityController from './Controller/universityController.js';
-import articleController from './Controller/articleController.js';
-import commentController from './Controller/commentController.js';
+import userController from './Controllers/userController.js';
+import universityController from './Controllers/universityController.js';
+import articleController from './Controllers/articleController.js';
+import commentController from './Controllers/commentController.js';
 import { jwtMiddleware } from './Middlewares/jwtMiddleware.js';
 const app = new Koa();
 

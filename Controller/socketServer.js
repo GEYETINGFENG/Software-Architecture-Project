@@ -1,7 +1,7 @@
 import { Server as SocketIO } from 'socket.io';
 import http from 'http';
 import { connectMongoDB} from './config/database.js';
-import { handleSocketConnection } from './Controller/gameController.js';
+import { handleSocketConnection } from './Controllers/gameController.js';
 const PORT = 3001; // Socket.IO 服务器的端口
 const server = http.createServer();
 const io = new SocketIO(server, {

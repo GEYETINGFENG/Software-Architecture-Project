@@ -8,7 +8,7 @@
     <div id="profile">
       <div class="left-container">
         <div class="avatar">
-          头像
+          Avatar
         </div>
         <div class="profile-info info-list-row">
           <p>Username：{{ user.username }}</p>

@@ -1,4 +1,4 @@
-import { Quiz } from '../Models/Quiz.js';
+import { Quiz } from '../../Model/Quiz.js';
 
 let rooms = {};
 
